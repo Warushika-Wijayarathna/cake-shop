@@ -2,32 +2,41 @@ package com.primeplus.cakeshop;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import jakarta.annotation.Resource;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 
 @WebServlet("/register")
 public class RegisterServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+
+    private DataSource dataSource;
+
+    @Override
+    public void init() throws ServletException {
+        try {
+            Context initContext = new InitialContext();
+            dataSource = (DataSource) initContext.lookup("java:comp/env/jdbc/pool");
+        } catch (NamingException e) {
+            throw new ServletException("Failed to lookup DataSource", e);
+        }
+    }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String username = request.getParameter("username");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        String jdbcURL = "jdbc:mysql://localhost:3306/CraveX";
-        String dbUser = "root";
-        String dbPassword = "password";
-
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection(jdbcURL, dbUser, dbPassword);
-
+        try (Connection connection = dataSource.getConnection()) {
             String sql;
             if (email.endsWith("@cravex.com")) {
                 sql = "INSERT INTO Admin (username, email, password) VALUES (?, ?, ?)";
@@ -35,19 +44,17 @@ public class RegisterServlet extends HttpServlet {
                 sql = "INSERT INTO Follower (username, email, password) VALUES (?, ?, ?)";
             }
 
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, username);
-            statement.setString(2, email);
-            statement.setString(3, password);
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setString(1, username);
+                statement.setString(2, email);
+                statement.setString(3, password);
 
-            int rows = statement.executeUpdate();
-            if (rows > 0) {
-                response.getWriter().println("User registered successfully!");
+                int rows = statement.executeUpdate();
+                if (rows > 0) {
+                    response.getWriter().println("User registered successfully!");
+                }
             }
-
-            statement.close();
-            connection.close();
-        } catch (ClassNotFoundException | SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
             response.getWriter().println("Error occurred: " + e.getMessage());
         }
