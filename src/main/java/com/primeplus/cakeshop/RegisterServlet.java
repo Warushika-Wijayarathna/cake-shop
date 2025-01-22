@@ -1,44 +1,37 @@
 package com.primeplus.cakeshop;
 
 import java.io.IOException;
-
 import com.primeplus.cakeshop.dto.AdminDTO;
 import com.primeplus.cakeshop.dto.FollowerDTO;
-import jakarta.activation.DataSource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.UserTransaction;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import com.primeplus.cakeshop.config.JtaConfiguration;
 
 public class RegisterServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private EntityManagerFactory entityManagerFactory;
+    private UserTransaction userTransaction;
 
     @Override
     public void init() throws ServletException {
         try {
-            Context initialContext = new InitialContext();
-            javax.sql.DataSource ds = (javax.sql.DataSource) initialContext.lookup("java:comp/env/jdbc/pool");
-            System.out.println("JNDI lookup successful.");
-        } catch (NamingException e) {
-            System.out.println("JNDI lookup failed: " + e.getMessage());
-            throw new ServletException(e);
-        }
-        try {
+            // Initialize Atomikos transaction manager via JtaConfiguration
+            JtaConfiguration.init();
+            userTransaction = JtaConfiguration.getUserTransaction();
+
+            // Initialize EntityManagerFactory
             entityManagerFactory = Persistence.createEntityManagerFactory("CraveX");
             System.out.println("EntityManagerFactory initialized successfully.");
         } catch (Exception e) {
-            System.out.println("Failed to initialize EntityManagerFactory: " + e.getMessage());
+            System.out.println("Failed to initialize transaction manager or EntityManagerFactory: " + e.getMessage());
             throw new ServletException(e);
         }
     }
@@ -50,13 +43,11 @@ public class RegisterServlet extends HttpServlet {
         String password = request.getParameter("password");
 
         EntityManager entityManager = null;
-        EntityTransaction transaction = null;
-
         try {
-            entityManager = entityManagerFactory.createEntityManager();
-            transaction = entityManager.getTransaction();
-            transaction.begin();
+            // Begin Atomikos transaction
+            userTransaction.begin();
 
+            entityManager = entityManagerFactory.createEntityManager();
             if (email.endsWith("@cravex.com")) {
                 AdminDTO admin = new AdminDTO(username, email, password);
                 entityManager.persist(admin);
@@ -67,11 +58,16 @@ public class RegisterServlet extends HttpServlet {
                 System.out.println("Follower user registered: " + follower);
             }
 
-            transaction.commit();
+            // Commit the transaction
+            userTransaction.commit();
             response.getWriter().println("User registered successfully!");
         } catch (Exception e) {
-            if (transaction != null && transaction.isActive()) {
-                transaction.rollback();
+            try {
+                if (userTransaction != null) {
+                    userTransaction.rollback();
+                }
+            } catch (Exception rollbackEx) {
+                System.out.println("Error during rollback: " + rollbackEx.getMessage());
             }
             System.out.println("Error during database operation: " + e.getMessage());
             response.getWriter().println("Error occurred: " + e.getMessage());
@@ -88,5 +84,8 @@ public class RegisterServlet extends HttpServlet {
             entityManagerFactory.close();
             System.out.println("EntityManagerFactory closed successfully.");
         }
+
+        // Shutdown Atomikos transaction manager
+        JtaConfiguration.shutdown();
     }
 }

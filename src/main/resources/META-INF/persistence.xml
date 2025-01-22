@@ -8,10 +8,10 @@
         <class>com.primeplus.cakeshop.entity.Admin</class>
         <class>com.primeplus.cakeshop.entity.Follower</class>
         <properties>
-            <property name="hibernate.transaction.jta.platform" value="org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform"/>
+            <property name="hibernate.transaction.jta.platform"
+                      value="org.hibernate.engine.transaction.jta.platform.internal.AtomikosJtaPlatform"/>
             <property name="hibernate.hbm2ddl.auto" value="update"/>
-            <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>
+
