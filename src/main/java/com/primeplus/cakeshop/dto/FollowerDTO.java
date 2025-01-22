@@ -5,9 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class AdminDTO {
+@NoArgsConstructor
+public class FollowerDTO {
     private String username;
     private String email;
     private String password;

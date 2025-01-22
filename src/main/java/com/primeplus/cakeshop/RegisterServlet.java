@@ -1,44 +1,46 @@
 package com.primeplus.cakeshop;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.logging.Logger;
+
+import com.primeplus.cakeshop.dto.AdminDTO;
+import com.primeplus.cakeshop.dto.FollowerDTO;
+import jakarta.activation.DataSource;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.sql.DataSource;
 
-@WebServlet(name = "registerServlet", value = "/register-servlet")
 public class RegisterServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-    private static final Logger logger = Logger.getLogger(RegisterServlet.class.getName());
 
-    private DataSource dataSource;
+    private EntityManagerFactory entityManagerFactory;
 
     @Override
     public void init() throws ServletException {
-        logger.info("RegisterServlet is initialized");
         try {
-            Context initContext = new InitialContext();
-            dataSource = (DataSource) initContext.lookup("java:comp/env/jdbc/pool");
-            logger.info("RegisterServlet initialized successfully");
-            logger.info("datasource>>>>> " + dataSource);
+            Context initialContext = new InitialContext();
+            javax.sql.DataSource ds = (javax.sql.DataSource) initialContext.lookup("java:comp/env/jdbc/pool");
+            System.out.println("JNDI lookup successful.");
         } catch (NamingException e) {
-            throw new ServletException("Failed to lookup DataSource", e);
+            System.out.println("JNDI lookup failed: " + e.getMessage());
+            throw new ServletException(e);
         }
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("RegisterServlet.doGet is called");
+        try {
+            entityManagerFactory = Persistence.createEntityManagerFactory("CraveX");
+            System.out.println("EntityManagerFactory initialized successfully.");
+        } catch (Exception e) {
+            System.out.println("Failed to initialize EntityManagerFactory: " + e.getMessage());
+            throw new ServletException(e);
+        }
     }
 
     @Override
@@ -47,29 +49,44 @@ public class RegisterServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        try (Connection connection = dataSource.getConnection()) {
-            String sql;
+        EntityManager entityManager = null;
+        EntityTransaction transaction = null;
+
+        try {
+            entityManager = entityManagerFactory.createEntityManager();
+            transaction = entityManager.getTransaction();
+            transaction.begin();
+
             if (email.endsWith("@cravex.com")) {
-                sql = "INSERT INTO Admin (username, email, password) VALUES (?, ?, ?)";
+                AdminDTO admin = new AdminDTO(username, email, password);
+                entityManager.persist(admin);
+                System.out.println("Admin user registered: " + admin);
             } else {
-                sql = "INSERT INTO Follower (username, email, password) VALUES (?, ?, ?)";
+                FollowerDTO follower = new FollowerDTO(username, email, password);
+                entityManager.persist(follower);
+                System.out.println("Follower user registered: " + follower);
             }
 
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setString(1, username);
-                statement.setString(2, email);
-                statement.setString(3, password);
-
-                int rows = statement.executeUpdate();
-                if (rows > 0) {
-                    response.getWriter().println("User registered successfully!");
-                }
+            transaction.commit();
+            response.getWriter().println("User registered successfully!");
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error during database operation: " + e.getMessage());
             response.getWriter().println("Error occurred: " + e.getMessage());
+        } finally {
+            if (entityManager != null) {
+                entityManager.close();
+            }
         }
     }
 
-
+    @Override
+    public void destroy() {
+        if (entityManagerFactory != null) {
+            entityManagerFactory.close();
+            System.out.println("EntityManagerFactory closed successfully.");
+        }
+    }
 }
