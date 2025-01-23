@@ -13,6 +13,8 @@
     <meta name="msapplication-tap-highlight" content="no">
     <link href="https://demo.dashboardpack.com/architectui-html-free/main.css" rel="stylesheet">
     <link href="asset/styles/styles.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
 </head>
 
 
@@ -411,13 +413,13 @@
             <ul class="vertical-nav-menu">
                 <li class="app-sidebar__heading">Dashboards</li>
                 <li>
-                    <a href="index.jsp" class="mm-active">
+                    <a href="user-portal.jsp" class="mm-active">
                         <i class="metismenu-icon pe-7s-rocket"></i>
                         User Portal
                     </a>
                 </li>
                 <li>
-                    <a href="admin.jsp" class="mm-active">
+                    <a href="admin-portal.jsp" class="mm-active">
                         <i class="metismenu-icon pe-7s-rocket"></i>
                         Admin Portal
                     </a>
@@ -1273,7 +1275,7 @@
                                             <option value="category2">Category 2</option>
                                             <!-- Add more categories as needed -->
                                         </select>
-                                        <button type="button" class="btn btn-secondary" onclick="addNewCategory()">+</button>
+                                        <button type="button" class="btn btn-secondary" onclick="showAddCategoryPrompt()">+</button>
                                     </div>
                                 </div>
                             </div>
@@ -1316,22 +1318,27 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="addCategoryForm">
+                <form id="addCategoryForm" action="add-category-servlet" method="post">
                     <div class="form-group">
                         <label for="newCategoryName">Category Name</label>
-                        <input type="text" id="newCategoryName" class="form-control" placeholder="Enter category name">
+                        <input type="text" id="newCategoryName" name="newCategoryName" class="form-control" placeholder="Enter category name">
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="addCategory()">Save</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" form="addCategoryForm" class="btn btn-primary">Save</button>
             </div>
         </div>
     </div>
 </div>
 
 <script type="text/javascript" src="https://demo.dashboardpack.com/architectui-html-free/assets/scripts/main.js"></script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Popper.js (required for Bootstrap JS) -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
     function loadOrderSection() {
         var mainContent = document.getElementById('main-content');
@@ -1346,8 +1353,7 @@
     }
 
     function showAddCategoryPrompt() {
-        // Show the modal for adding a new category
-        document.getElementById('addCategoryModal').style.display = 'block';
+        $('#addCategoryModal').modal('show');
     }
 
 </script>
