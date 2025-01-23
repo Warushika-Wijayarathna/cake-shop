@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Custom CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
 
@@ -262,12 +263,16 @@
             <span>or use your email for registration</span>
             <input type="text" name="username" placeholder="Username" required />
             <input type="email" name="email" placeholder="Email" required />
-            <input type="password" name="password" placeholder="Password" required />
+            <input id="sign-up-password" type="password" name="password" placeholder="Password" required />
+            <div style="display: flex; align-items: center;">
+                <input type="checkbox" id="showSignUpPassword" onclick="togglePasswordVisibility('sign-up-password')" style="margin-right: 5px;">
+                <label for="showSignUpPassword" style="font-size: 10px">Show Password</label>
+            </div>
             <button>Sign Up</button>
         </form>
     </div>
     <div class="form-container sign-in-container">
-        <form action="#">
+        <form action="sign-in-servlet" method="post">
             <h1>Sign in</h1>
             <div class="social-container">
                 <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
@@ -275,8 +280,12 @@
                 <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
             </div>
             <span>or use your account</span>
-            <input type="email" placeholder="Email" />
-            <input type="password" placeholder="Password" />
+            <input type="email" name="email" placeholder="Email" required />
+            <input id="sign-in-password" type="password" name="password" placeholder="Password" required />
+            <div style="display: flex; align-items: center;">
+                <input type="checkbox" id="showSignInPassword" onclick="togglePasswordVisibility('sign-in-password')" style="margin-right: 5px;">
+                <label for="showSignInPassword" style="font-size: 10px">Show Password</label>
+            </div>
             <a href="#">Forgot your password?</a>
             <button>Sign In</button>
         </form>
@@ -309,6 +318,29 @@
     signInButton.addEventListener('click', () => {
         container.classList.remove("right-panel-active");
     });
+
+    <% if (request.getAttribute("message") != null) { %>
+    // Clear the input fields
+    document.querySelector('input[name="username"]').value = '';
+    document.querySelector('input[name="email"]').value = '';
+    document.querySelector('input[name="password"]').value = '';
+
+    // Display the alert
+    Swal.fire({
+        icon: 'info',
+        title: 'Message',
+        text: '<%= request.getAttribute("message") %>'
+    });
+    <% } %>
+    function togglePasswordVisibility(inputId) {
+        const passwordField = document.getElementById(inputId);
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+        } else {
+            passwordField.type = "password";
+        }
+    }
+
 </script>
 </body>
 </html>

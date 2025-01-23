@@ -103,18 +103,12 @@
             <artifactId>javax.json</artifactId>
             <version>1.1.4</version>
         </dependency>
-        <dependency>
-            <groupId>com.atomikos</groupId>
-            <artifactId>transactions-jta</artifactId>
-            <version>6.0.0</version>
-            <classifier>jakarta</classifier>
-        </dependency>
-        <dependency>
-            <groupId>com.atomikos</groupId>
-            <artifactId>transactions-jdbc</artifactId>
-            <version>5.0.9</version> <!-- Update to the latest version -->
-        </dependency>
 
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+            <version>5.7.3</version> <!-- Use the version that matches your Spring setup -->
+        </dependency>
 
 
     </dependencies>
@@ -128,4 +122,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>

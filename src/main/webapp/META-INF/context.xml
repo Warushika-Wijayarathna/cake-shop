@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Context path="/">
-    <!-- Atomikos JTA DataSource -->
     <Resource name="jdbc/pool"
               type="javax.sql.DataSource"
-              factory="com.atomikos.jdbc.AtomikosDataSourceBean"
-              uniqueResourceName="cravexDataSource"
-              driverClassName="com.mysql.cj.jdbc.Driver"
+              driverClassName="com.mysql.jdbc.Driver"
               url="jdbc:mysql://localhost:3306/CraveX"
-              user="root"
+              username="root"
               password="Ijse@1234"
-              maxPoolSize="10"
-              xaDataSourceClass="com.mysql.cj.jdbc.MysqlXADataSource"
-              minPoolSize="2"/>
+              maxTotal="5"
+              initialSize="5">
+    </Resource>
 </Context>

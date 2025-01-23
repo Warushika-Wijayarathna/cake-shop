@@ -1,0 +1,32 @@
+.app-sidebar__heading {
+    color: #ff3939 !important;
+}
+.vertical-nav-menu li a.mm-active {
+    background: rgba(255, 57, 57, 0.24) !important;
+}
+
+.hamburger.is-active .hamburger-inner, .hamburger.is-active .hamburger-inner::before, .hamburger.is-active .hamburger-inner::after {
+    background-color: #ff3939 !important;
+}
+
+.hamburger-inner, .hamburger-inner::before, .hamburger-inner::after {
+    background-color: #ff3939 !important;
+}
+
+.search-wrapper .input-holder .search-icon span::after,
+.search-wrapper .input-holder .search-icon span::before {
+    background: rgba(255, 57, 57, 0.55) !important;
+}
+
+.search-wrapper .close::before, .search-wrapper .close::after {
+    background: #ff3939 !important;
+}
+
+
+.search-wrapper .input-holder .search-icon span::after{
+    border: 2px solid #ff3939 !important;
+}
+
+.app-sidebar__inner .vertical-nav-menu .app-sidebar__heading li a:hover {
+    background-color: rgba(255, 57, 57, 0.55) !important;
+}
