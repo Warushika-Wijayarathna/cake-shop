@@ -1280,14 +1280,16 @@
                                             <option value="category2">Category 2</option>
                                             <!-- Add more categories as needed -->
                                         </select>
-                                        <a id="category-list-link" href="${pageContext.request.contextPath}/category-list-servlet" style="display: none">Load Categories</a>
-                                        <button type="button" class="btn btn-secondary" onclick="showAddCategoryPrompt()">+</button>
+                                        <form id="category-list-form" action="category-list-servlet" method="post">
+                                            <button id="add-cat-btn" type="button" class="btn btn-secondary">+</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <button type="button" onclick="uploadItem()" class="mt-1 btn btn-primary">Submit</button>
                     </form>
+
                 </div>
             </div>
         </div>
@@ -1440,11 +1442,6 @@
     }
 
 
-    function showAddCategoryPrompt() {
-        document.getElementById('category-list-link').click();
-        $('#addCategoryModal').modal('show');
-    }
-
 </script>
 <% if (session.getAttribute("message") != null) { %>
 <script>
@@ -1456,6 +1453,19 @@
     });
 </script>
 <% session.removeAttribute("message"); %>
+<% } %>
+<% if (Boolean.TRUE.equals(request.getAttribute("showAddCategoryModal"))) { %>
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        console.log('DOMContentLoaded');
+        <% if (Boolean.TRUE.equals(request.getAttribute("showAddCategoryModal"))) { %>
+        $(#add).ready(function() {
+            $('#addCategoryModal').modal('show');
+        });
+        <% } %>
+    });
+</script>
 <% } %>
 <script>
     function submitEditForm(button) {

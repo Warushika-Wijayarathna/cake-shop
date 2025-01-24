@@ -33,8 +33,8 @@ public class CategoryListServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("CategoryListServlet doGet");
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println("CategoryListServlet doPost");
         List<Category> categories = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             String query = "SELECT id, name FROM Category";
@@ -51,6 +51,9 @@ public class CategoryListServlet extends HttpServlet {
         }
 
         req.setAttribute("categories", categories);
+        req.setAttribute("showAddCategoryModal", true);
+        System.out.println("CategoryListServlet forwarding to admin-portal.jsp>>>>>" + categories);
         req.getRequestDispatcher("/admin-portal.jsp").forward(req, resp);
     }
+
 }
