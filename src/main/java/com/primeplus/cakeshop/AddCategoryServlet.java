@@ -11,6 +11,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.logging.Logger;
 
 @WebServlet(name = "AddCategoryServlet", value = "/add-category-servlet")
@@ -34,7 +36,31 @@ public class AddCategoryServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String category = req.getParameter("category").trim();
 
+        // Validate input
+        if (category == null || category.isEmpty()) {
+            req.getSession().setAttribute("message", "Category is required.");
+            resp.sendRedirect(req.getContextPath() + "/admin-portal.jsp#item-section");
+            return;
+        }
+
+        // Add category to database
+        try (Connection connection = dataSource.getConnection()) {
+            String query = "INSERT INTO Category (name) VALUES (?)";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, category);
+                statement.executeUpdate();
+            }
+        } catch (Exception e) {
+            logger.severe("Failed to add category: " + e.getMessage());
+            req.getSession().setAttribute("message", "Failed to add category.");
+            resp.sendRedirect(req.getContextPath() + "/admin-portal.jsp#item-section");
+            return;
+        }
+
+        req.getSession().setAttribute("message", "Category added successfully.");
+        resp.sendRedirect(req.getContextPath() + "/admin-portal.jsp#item-section");
     }
 
 

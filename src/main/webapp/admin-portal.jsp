@@ -1,3 +1,5 @@
+<%@ page import="com.primeplus.cakeshop.entity.Category" %>
+<%@ page import="java.util.List" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!doctype html>
 <html lang="en">
@@ -14,6 +16,8 @@
     <link href="https://demo.dashboardpack.com/architectui-html-free/main.css" rel="stylesheet">
     <link href="asset/styles/styles.css" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 </head>
 
@@ -426,14 +430,15 @@
                 </li>
                 <li class="app-sidebar__heading">UI Components</li>
                 <li>
-                    <a href="#" onclick="loadItemSection()">
+                    <a href="javascript:void(0);" onclick="loadItemSection()">
                         <i class="metismenu-icon pe-7s-diamond"></i>
                         Items
                         <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
                     </a>
                 </li>
+
                 <li>
-                    <a href="#" onclick="loadOrderSection()">
+                    <a href="#order-section" onclick="loadOrderSection()">
                         <i class="metismenu-icon pe-7s-diamond"></i>
                         Orders
                         <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
@@ -1275,6 +1280,7 @@
                                             <option value="category2">Category 2</option>
                                             <!-- Add more categories as needed -->
                                         </select>
+                                        <a id="category-list-link" href="${pageContext.request.contextPath}/category-list-servlet" style="display: none">Load Categories</a>
                                         <button type="button" class="btn btn-secondary" onclick="showAddCategoryPrompt()">+</button>
                                     </div>
                                 </div>
@@ -1311,27 +1317,82 @@
 <div id="addCategoryModal" class="modal" tabindex="-1" role="dialog" style="display: none;">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
+            <!-- Modal Header -->
             <div class="modal-header">
-                <h5 class="modal-title">Add New Category</h5>
+                <h5 class="modal-title">Manage Categories</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+
+            <!-- Modal Body -->
             <div class="modal-body">
+                <!-- Form to Add a New Category -->
                 <form id="addCategoryForm" action="add-category-servlet" method="post">
                     <div class="form-group">
                         <label for="newCategoryName">Category Name</label>
-                        <input type="text" id="newCategoryName" name="newCategoryName" class="form-control" placeholder="Enter category name">
+                        <input type="text" id="newCategoryName" name="category" class="form-control" placeholder="Enter category name">
                     </div>
+                    <button type="submit" class="btn btn-primary btn-block">Add Category</button>
                 </form>
+
+                <!-- Divider -->
+                <hr>
+
+                <!-- Table to Show Existing Categories -->
+                <h6 class="mt-4">Existing Categories</h6>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Category Name</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody id="categoryTableBody">
+                        <!-- Example PHP Rendering for Server-Side -->
+                        <%
+                            List<Category> categories = (List<Category>) request.getAttribute("categories");
+                            if (categories != null && !categories.isEmpty()) {
+                                for (Category category : categories) {
+                        %>
+                        <tr>
+                            <td><%= category.getId() %></td>
+                            <td>
+                                <form action="edit-category-servlet" method="post" class="edit-category-form">
+                                    <input type="hidden" name="categoryId" value="<%= category.getId() %>">
+                                    <input type="text" name="categoryName" class="form-control" value="<%= category.getName() %>">
+                                </form>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-warning" onclick="submitEditForm(this)">Save</button>
+                                <button class="btn btn-sm btn-danger delete-category-btn" data-id="<%= category.getId() %>">Delete</button>
+                            </td>
+                        </tr>
+                        <%
+                            }
+                        } else {
+                        %>
+                        <tr>
+                            <td colspan="3">No categories available.</td>
+                        </tr>
+                        <%
+                            }
+                        %>
+
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
+            <!-- Modal Footer -->
             <div class="modal-footer">
-                <button type="submit" form="addCategoryForm" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
-
 <script type="text/javascript" src="https://demo.dashboardpack.com/architectui-html-free/assets/scripts/main.js"></script>
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -1339,6 +1400,24 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
 <!-- Bootstrap JS -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const hash = window.location.hash;
+        if (hash) {
+            const target = document.querySelector(hash);
+            if (target) {
+                target.scrollIntoView({ behavior: "smooth" });
+            }
+        }
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+        if (window.location.hash === "#item-section") {
+            loadItemSection();
+        }
+    });
+
+</script>
+
 <script>
     function loadOrderSection() {
         var mainContent = document.getElementById('main-content');
@@ -1349,13 +1428,40 @@
     function loadItemSection() {
         var mainContent = document.getElementById('main-content');
         var itemSection = document.getElementById('item-section');
+
+        // Update the content of #main-content
         mainContent.innerHTML = itemSection.innerHTML;
+
+        // Scroll to the top of #main-content (or specific section)
+        mainContent.scrollIntoView({ behavior: "smooth" });
+
+        // Update the URL fragment (optional)
+        window.history.replaceState(null, null, "#item-section");
     }
 
+
     function showAddCategoryPrompt() {
+        document.getElementById('category-list-link').click();
         $('#addCategoryModal').modal('show');
     }
 
+</script>
+<% if (session.getAttribute("message") != null) { %>
+<script>
+    // Display the alert
+    Swal.fire({
+        icon: 'info',
+        title: 'Message',
+        text: '<%= session.getAttribute("message") %>'
+    });
+</script>
+<% session.removeAttribute("message"); %>
+<% } %>
+<script>
+    function submitEditForm(button) {
+        const form = button.closest('tr').querySelector('.edit-category-form');
+        form.submit();
+    }
 </script>
 </body>
 </html>

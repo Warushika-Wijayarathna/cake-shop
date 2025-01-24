@@ -1,4 +1,4 @@
-package com.primeplus.cakeshop.entity;
+package com.primeplus.cakeshop;
 
 import java.io.IOException;
 import java.sql.Connection;
