@@ -1276,18 +1276,26 @@
                                     <label for="itemCategory">Category</label>
                                     <div style="display: flex; align-items: center;">
                                         <select name="itemCategory" id="itemCategory" class="form-control" style="margin-right: 5px;">
-                                            <option value="category1">Category 1</option>
-                                            <option value="category2">Category 2</option>
-                                            <!-- Add more categories as needed -->
+                                            <%
+                                                List<Category> categoriess = (List<Category>) request.getAttribute("category");
+                                                if (categoriess != null) {
+                                                    for (Category category : categoriess) {
+                                            %>
+                                            <option value="<%= category.getId() %>"><%= category.getId() %> - <%= category.getName() %></option>
+                                            <%
+                                                    }
+                                                }
+                                            %>
                                         </select>
-                                        <form id="category-list-form" action="category-list-servlet" method="post">
-                                            <button id="add-cat-btn" type="button" class="btn btn-secondary">+</button>
-                                        </form>
+                                        <button id="add-cat-btn" type="button" class="btn btn-secondary"  onclick="showAddCategoryModal()">+</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <button type="button" onclick="uploadItem()" class="mt-1 btn btn-primary">Submit</button>
+                    </form>
+                    <form id="load-categories" action="${pageContext.request.contextPath}/load-all-category-servlet" method="post" style="display: none">
+                        <button type="submit" id="load-cat-btn" class="mt-1 btn btn-primary">Load Categories</button>
                     </form>
 
                 </div>
@@ -1330,7 +1338,7 @@
             <!-- Modal Body -->
             <div class="modal-body">
                 <!-- Form to Add a New Category -->
-                <form id="addCategoryForm" action="add-category-servlet" method="post">
+                <form id="addCategoryForm" action="${pageContext.request.contextPath}/add-category-servlet" method="post">
                     <div class="form-group">
                         <label for="newCategoryName">Category Name</label>
                         <input type="text" id="newCategoryName" name="category" class="form-control" placeholder="Enter category name">
@@ -1341,51 +1349,6 @@
                 <!-- Divider -->
                 <hr>
 
-                <!-- Table to Show Existing Categories -->
-                <h6 class="mt-4">Existing Categories</h6>
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Category Name</th>
-                            <th>Actions</th>
-                        </tr>
-                        </thead>
-                        <tbody id="categoryTableBody">
-                        <!-- Example PHP Rendering for Server-Side -->
-                        <%
-                            List<Category> categories = (List<Category>) request.getAttribute("categories");
-                            if (categories != null && !categories.isEmpty()) {
-                                for (Category category : categories) {
-                        %>
-                        <tr>
-                            <td><%= category.getId() %></td>
-                            <td>
-                                <form action="edit-category-servlet" method="post" class="edit-category-form">
-                                    <input type="hidden" name="categoryId" value="<%= category.getId() %>">
-                                    <input type="text" name="categoryName" class="form-control" value="<%= category.getName() %>">
-                                </form>
-                            </td>
-                            <td>
-                                <button class="btn btn-sm btn-warning" onclick="submitEditForm(this)">Save</button>
-                                <button class="btn btn-sm btn-danger delete-category-btn" data-id="<%= category.getId() %>">Delete</button>
-                            </td>
-                        </tr>
-                        <%
-                            }
-                        } else {
-                        %>
-                        <tr>
-                            <td colspan="3">No categories available.</td>
-                        </tr>
-                        <%
-                            }
-                        %>
-
-                        </tbody>
-                    </table>
-                </div>
             </div>
 
             <!-- Modal Footer -->
@@ -1441,6 +1404,16 @@
         window.history.replaceState(null, null, "#item-section");
     }
 
+    function loadCategories() {
+        console.log('Loading categories...');
+        var loadCategoriesForm = document.getElementById('load-cat-btn');
+        loadCategoriesForm.click();
+    }
+
+    function showAddCategoryModal() {
+        $('#addCategoryModal').modal('show');
+    }
+
 
 </script>
 <% if (session.getAttribute("message") != null) { %>
@@ -1454,19 +1427,8 @@
 </script>
 <% session.removeAttribute("message"); %>
 <% } %>
-<% if (Boolean.TRUE.equals(request.getAttribute("showAddCategoryModal"))) { %>
 <script>
-
-    document.addEventListener("DOMContentLoaded", function () {
-        console.log('DOMContentLoaded');
-        <% if (Boolean.TRUE.equals(request.getAttribute("showAddCategoryModal"))) { %>
-        $(#add).ready(function() {
-            $('#addCategoryModal').modal('show');
-        });
-        <% } %>
-    });
 </script>
-<% } %>
 <script>
     function submitEditForm(button) {
         const form = button.closest('tr').querySelector('.edit-category-form');
