@@ -1,5 +1,6 @@
 <%@ page import="com.primeplus.cakeshop.entity.Category" %>
 <%@ page import="java.util.List" %>
+<%@ page import="com.primeplus.cakeshop.entity.Item" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!doctype html>
 <html lang="en">
@@ -1233,49 +1234,48 @@
             <div class="main-card mb-3 card">
                 <div class="card-header">Add New Item</div>
                 <div class="card-body">
-                    <form id="item-form" action="add-item-servlet" method="post">
+                    <form id="item-form" action="${pageContext.request.contextPath}/add-item-servlet" method="post" enctype="multipart/form-data">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="position-relative form-group">
                                     <label for="itemName">Item Name</label>
-                                    <input name="itemName" id="itemName" placeholder="Item Name" type="text" class="form-control">
+                                    <input name="name" id="itemName" placeholder="Item Name" type="text" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="position-relative form-group">
                                     <label for="itemDescription">Description</label>
-                                    <textarea name="itemDescription" id="itemDescription" placeholder="Description" class="form-control"></textarea>
+                                    <textarea name="description" id="itemDescription" placeholder="Description" class="form-control"></textarea>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="position-relative form-group">
                                     <label for="itemImage">Image</label>
-                                    <input name="itemImage" id="itemImage" type="file" class="form-control-file">
-                                </div>
+                                    <input name="image" id="itemImage" type="file" class="form-control-file" accept="image/*">                                </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="position-relative form-group">
                                     <label for="itemPrice">Price</label>
-                                    <input name="itemPrice" id="itemPrice" placeholder="Price" type="number" class="form-control">
+                                    <input name="price" id="itemPrice" placeholder="Price" type="number" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="position-relative form-group">
                                     <label for="itemDiscount">Discount</label>
-                                    <input name="itemDiscount" id="itemDiscount" placeholder="Discount" type="number" class="form-control">
+                                    <input name="discount" id="itemDiscount" placeholder="Discount" type="number" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="position-relative form-group">
                                     <label for="itemQuantity">Quantity</label>
-                                    <input name="itemQuantity" id="itemQuantity" placeholder="Quantity" type="number" class="form-control">
+                                    <input name="quantity" id="itemQuantity" placeholder="Quantity" type="number" class="form-control">
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="position-relative form-group">
                                     <label for="itemCategory">Category</label>
                                     <div style="display: flex; align-items: center;">
-                                        <select name="itemCategory" id="itemCategory" class="form-control" style="margin-right: 5px;">
+                                        <select name="category_id" id="itemCategory" class="form-control" style="margin-right: 5px;">
                                             <%
                                                 List<Category> categoriess = (List<Category>) request.getAttribute("category");
                                                 if (categoriess != null) {
@@ -1292,7 +1292,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="button" onclick="uploadItem()" class="mt-1 btn btn-primary">Submit</button>
+                        <button type="button" id="add-iem-btn" onclick="addItem(event)" class="mt-1 btn btn-primary">Submit</button>
                     </form>
                     <form id="load-categories" action="${pageContext.request.contextPath}/load-all-category-servlet" method="post" style="display: none">
                         <button type="submit" id="load-cat-btn" class="mt-1 btn btn-primary">Load Categories</button>
@@ -1312,11 +1312,43 @@
                             <th>Image</th>
                             <th>Name</th>
                             <th>Description</th>
+                            <th>Price</th>
+                            <th>Discount</th>
+                            <th>Quantity</th>
+                            <th>Category</th>
                             <th>Actions</th>
                         </tr>
                         </thead>
-                        <tbody id="item-list">
-                        <!-- Items will be populated here dynamically -->
+                        <tbody>
+                        <%
+                            List<Item> items = (List<Item>) request.getAttribute("items");
+                            if (items != null) {
+                                for (Item item : items) {
+                        %>
+                        <tr>
+                            <td><%= item.getId() %></td>
+                            <td><img src="data:image/jpeg;base64,<%= new String(item.getImage()) %>" alt="Item Image" width="50" height="50"></td>
+                            <td><%= item.getName() %></td>
+                            <td><%= item.getDescription() %></td>
+                            <td><%= item.getPrice() %></td>
+                            <td><%= item.getDiscount() %></td>
+                            <td><%= item.getQuantity() %></td>
+                            <td><%= item.getCategoryId() %></td>
+                            <td>
+                                <form action="${pageContext.request.contextPath}/edit-item-servlet" method="post" style="display:inline;">
+                                    <input type="hidden" name="itemId" value="<%= item.getId() %>">
+                                    <button type="submit" class="btn btn-warning btn-sm">Edit</button>
+                                </form>
+                                <form action="${pageContext.request.contextPath}/delete-item-servlet" method="post" style="display:inline;">
+                                    <input type="hidden" name="itemId" value="<%= item.getId() %>">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <%
+                                }
+                            }
+                        %>
                         </tbody>
                     </table>
                 </div>
@@ -1324,6 +1356,11 @@
         </div>
     </div>
 </div>
+
+<form id="load-items-form" action="${pageContext.request.contextPath}/load-all-items-servlet" method="post" style="display: none">
+    <button type="submit" id="load-item-btn" class="mt-1 btn btn-primary">Load Items</button>
+</form>
+
 <div id="addCategoryModal" class="modal" tabindex="-1" role="dialog" style="display: none;">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -1378,6 +1415,8 @@
     document.addEventListener("DOMContentLoaded", function () {
         if (window.location.hash === "#item-section") {
             loadItemSection();
+            loadCategories();
+            loadItems();
         }
     });
 
@@ -1414,6 +1453,17 @@
         $('#addCategoryModal').modal('show');
     }
 
+    function addItem(event) {
+        event.preventDefault();
+        var itemForm = document.getElementById('item-form');
+        itemForm.submit();
+    }
+
+    function loadItems() {
+        console.log('Loading items...');
+        var loadItemsForm = document.getElementById('load-item-btn');
+        loadItemsForm.click();
+    }
 
 </script>
 <% if (session.getAttribute("message") != null) { %>

@@ -2,21 +2,26 @@ package com.primeplus.cakeshop;
 
 import javax.sql.DataSource;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
 
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.logging.Logger;
 
 @WebServlet(name = "AddItemServlet", value = "/add-item-servlet")
+@MultipartConfig
 public class AddItemServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final Logger logger = Logger.getLogger(AddItemServlet.class.getName());
@@ -25,6 +30,7 @@ public class AddItemServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
+        System.out.println("AddItemServlet is initialized");
         logger.info("AddItemServlet is initialized");
         try {
             Context initContext = new InitialContext();
@@ -37,61 +43,47 @@ public class AddItemServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String name = request.getParameter("name").trim();
-        String price = request.getParameter("price").trim();
-        String description = request.getParameter("description").trim();
-        String category = request.getParameter("category").trim();
-        String image = request.getParameter("image").trim();
+        System.out.println("AddItemServlet doPost method is called");
 
-        // Validate input
-        if (name == null || name.isEmpty()) {
-            request.setAttribute("message", "Name is required.");
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
-            return;
+        System.out.println("Name: " + request.getParameter("name"));
+        System.out.println("Description: " + request.getParameter("description"));
+        System.out.println("Price: " + request.getParameter("price"));
+        System.out.println("Discount: " + request.getParameter("discount"));
+        System.out.println("Quantity: " + request.getParameter("quantity"));
+        System.out.println("Category ID: " + request.getParameter("category_id"));
+        System.out.println("Image: " + request.getPart("image").getSubmittedFileName());
+
+        Part filePart = request.getPart("image");
+        InputStream inputStream = null;
+        if (filePart != null) {
+            inputStream = filePart.getInputStream();
         }
 
-        if (price == null || price.isEmpty()) {
-            request.setAttribute("message", "Price is required.");
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
-            return;
+        // Convert InputStream to byte array
+        byte[] imageBytes = null;
+        if (inputStream != null) {
+            imageBytes = inputStream.readAllBytes();
         }
 
-        if (description == null || description.isEmpty()) {
-            request.setAttribute("message", "Description is required.");
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
-            return;
-        }
-
-        if (category == null || category.isEmpty()) {
-            request.setAttribute("message", "Category is required.");
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
-            return;
-        }
-
-        if (image == null || image.isEmpty()) {
-            request.setAttribute("message", "Image is required.");
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
-            return;
-        }
-
+        // Save the item to the database
         try (Connection connection = dataSource.getConnection()) {
-            // Insert item
-            String sql = "INSERT INTO Item (name, price, description, category, image) VALUES (?, ?, ?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, name);
-            statement.setString(2, price);
-            statement.setString(3, description);
-            statement.setString(4, category);
-            statement.setString(5, image);
-            statement.executeUpdate();
-
-            request.setAttribute("message", "Item added successfully.");
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
+            String query = "INSERT INTO Item (name, description, image, price, discount, quantity, category_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
+                statement.setString(1, request.getParameter("name"));
+                statement.setString(2, request.getParameter("description"));
+                statement.setBytes(3, imageBytes); // Save byte array
+                statement.setBigDecimal(4, new BigDecimal(request.getParameter("price")));
+                statement.setBigDecimal(5, new BigDecimal(request.getParameter("discount")));
+                statement.setInt(6, Integer.parseInt(request.getParameter("quantity")));
+                statement.setInt(7, Integer.parseInt(request.getParameter("category_id")));
+                statement.executeUpdate();
+            }
         } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("message", "Error occurred: " + e.getMessage());
-            request.getRequestDispatcher("/index.jsp").forward(request, response);
+            System.out.println("Failed to save item");
+            throw new ServletException("Failed to save item", e);
         }
 
+        System.out.println("Item saved successfully");
+        response.sendRedirect(request.getContextPath() + "/admin-portal.jsp#item-section");
     }
 }

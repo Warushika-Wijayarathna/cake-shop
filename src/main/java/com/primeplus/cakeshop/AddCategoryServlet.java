@@ -13,6 +13,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.logging.Logger;
 
 @WebServlet(name = "AddCategoryServlet", value = "/add-category-servlet")
@@ -45,12 +46,25 @@ public class AddCategoryServlet extends HttpServlet {
             return;
         }
 
-        // Add category to database
+        // Check if category already exists
         try (Connection connection = dataSource.getConnection()) {
-            String query = "INSERT INTO Category (name) VALUES (?)";
-            try (PreparedStatement statement = connection.prepareStatement(query)) {
-                statement.setString(1, category);
-                statement.executeUpdate();
+            String checkQuery = "SELECT COUNT(*) FROM Category WHERE name = ?";
+            try (PreparedStatement checkStatement = connection.prepareStatement(checkQuery)) {
+                checkStatement.setString(1, category);
+                try (ResultSet resultSet = checkStatement.executeQuery()) {
+                    if (resultSet.next() && resultSet.getInt(1) > 0) {
+                        req.getSession().setAttribute("message", "Category already exists.");
+                        resp.sendRedirect(req.getContextPath() + "/admin-portal.jsp#item-section");
+                        return;
+                    }
+                }
+            }
+
+            // Add category to database
+            String insertQuery = "INSERT INTO Category (name) VALUES (?)";
+            try (PreparedStatement insertStatement = connection.prepareStatement(insertQuery)) {
+                insertStatement.setString(1, category);
+                insertStatement.executeUpdate();
             }
         } catch (Exception e) {
             logger.severe("Failed to add category: " + e.getMessage());
