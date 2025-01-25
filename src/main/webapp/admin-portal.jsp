@@ -424,14 +424,14 @@
                     </a>
                 </li>
                 <li>
-                    <a href="admin-portal.jsp" class="mm-active">
+                    <a href="#main-content" class="mm-active">
                         <i class="metismenu-icon pe-7s-rocket"></i>
                         Admin Portal
                     </a>
                 </li>
                 <li class="app-sidebar__heading">UI Components</li>
                 <li>
-                    <a href="javascript:void(0);" onclick="loadItemSection()">
+                    <a href="item.jsp" onclick="loadItemSection()">
                         <i class="metismenu-icon pe-7s-diamond"></i>
                         Items
                         <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
@@ -439,7 +439,7 @@
                 </li>
 
                 <li>
-                    <a href="#order-section" onclick="loadOrderSection()">
+                    <a href="order.jsp" onclick="loadOrderSection()">
                         <i class="metismenu-icon pe-7s-diamond"></i>
                         Orders
                         <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
@@ -1275,9 +1275,9 @@
                                 <div class="position-relative form-group">
                                     <label for="itemCategory">Category</label>
                                     <div style="display: flex; align-items: center;">
-                                        <select name="category_id" id="itemCategory" class="form-control" style="margin-right: 5px;">
+                                        <select name="category_id" id="itemCategory" class="form-control" onclick="loadCategories()" style="margin-right: 5px;">
                                             <%
-                                                List<Category> categoriess = (List<Category>) request.getAttribute("category");
+                                                List<Category> categoriess = (List<Category>) session.getAttribute("category");
                                                 if (categoriess != null) {
                                                     for (Category category : categoriess) {
                                             %>
@@ -1303,7 +1303,7 @@
         </div>
         <div class="col-md-12">
             <div class="main-card mb-3 card">
-                <div class="card-header">All Items</div>
+                <div id="all-items" class="card-header" onclick="loadItems()">All Items</div>
                 <div class="card-body">
                     <table class="mb-0 table table-bordered">
                         <thead>
@@ -1321,7 +1321,7 @@
                         </thead>
                         <tbody>
                         <%
-                            List<Item> items = (List<Item>) request.getAttribute("items");
+                            List<Item> items = (List<Item>) session.getAttribute("items");
                             if (items != null) {
                                 for (Item item : items) {
                         %>
@@ -1398,6 +1398,7 @@
         </div>
     </div>
 </div>
+<!-- External Scripts -->
 <script type="text/javascript" src="https://demo.dashboardpack.com/architectui-html-free/assets/scripts/main.js"></script>
 <!-- jQuery -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -1405,95 +1406,107 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
 <!-- Bootstrap JS -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 <script>
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const hash = window.location.hash;
-        if (hash) {
-            const target = document.querySelector(hash);
-            if (target) {
-                target.scrollIntoView({ behavior: "smooth" });
-            }
+    // Function to scroll to a section and update the URL without reloading the page
+    function goToSection(sectionId) {
+        const section = document.querySelector(`#${sectionId}`);
+        if (section) {
+            section.scrollIntoView({ behavior: "smooth" });
+            history.pushState(null, "", `#${sectionId}`);
         }
+    }
 
-        console.log('Loading item section...>>>>', window.location.hash);
-        if (window.location.hash === "#item-section") {
-            loadItemSection();
-
-            loadItems();
-
-
+    // Handle browser back/forward navigation or manual hash changes
+    window.addEventListener("hashchange", function () {
+        const sectionId = window.location.hash.substring(1);
+        const section = document.querySelector(`#${sectionId}`);
+        if (section) {
+            section.scrollIntoView({ behavior: "smooth" });
         }
     });
 
-
-</script>
-
-<script>
+    // Load content sections dynamically
     function loadOrderSection() {
         var mainContent = document.getElementById('main-content');
         var orderSection = document.getElementById('order-section');
-        mainContent.innerHTML = orderSection.innerHTML;
+        if (mainContent && orderSection) {
+            mainContent.innerHTML = orderSection.innerHTML;
+        }
     }
 
     function loadItemSection() {
-        var mainContent = document.getElementById('main-content');
-        var itemSection = document.getElementById('item-section');
+        const mainContent = document.getElementById('main-content');
+        const itemSection = document.getElementById('item-section');
 
-        // Update the content of #main-content
-        mainContent.innerHTML = itemSection.innerHTML;
+        if (mainContent && itemSection) {
+            mainContent.innerHTML = itemSection.innerHTML;
 
-        // Scroll to the top of #main-content (or specific section)
-        mainContent.scrollIntoView({ behavior: "smooth" });
-
-        // Update the URL fragment (optional)
-        window.history.replaceState(null, null, "#item-section");
-
+            // Scroll to the top of #main-content
+            mainContent.scrollIntoView({ behavior: "smooth" });
+        }
     }
 
-    function loadCategories() {
-        console.log('Loading categories...');
-        var loadCategoriesForm = document.getElementById('load-cat-btn');
-        loadCategoriesForm.click();
-    }
-
+    // Show the "Add Category" modal
     function showAddCategoryModal() {
         $('#addCategoryModal').modal('show');
     }
 
+    // Submit the form to add an item, then redirect
     function addItem(event) {
         event.preventDefault();
         var itemForm = document.getElementById('item-form');
-        itemForm.submit();
+        if (itemForm) {
+            itemForm.submit();
+            goToSection('item-section');
+        }
     }
 
+    // Load items by triggering the load item button click
     function loadItems() {
-        console.log('Loading items...');
-        var loadItemsForm = document.getElementById('load-item-btn');
-        loadItemsForm.click();
-
-        loadCategories();
+        return new Promise((resolve, reject) => {
+            console.log("Loading items...");
+            const loadItemsForm = document.getElementById('load-item-btn');
+            if (loadItemsForm) {
+                loadItemsForm.click();
+                resolve();
+                goToSection('item-section');
+            } else {
+                reject("load-item-btn not found");
+            }
+        });
     }
 
-</script>
-<% if (session.getAttribute("message") != null) { %>
-<script>
-    // Display the alert
+    // Load categories by triggering the load category button click
+    function loadCategories() {
+        console.log("Loading categories...");
+        const loadCategoriesForm = document.getElementById('load-cat-btn');
+        if (loadCategoriesForm) {
+            loadCategoriesForm.click();
+            goToSection('item-section');
+        } else {
+            console.error("load-cat-btn not found");
+        }
+    }
+
+    // Show message alert if session contains a message
+    <% if (session.getAttribute("message") != null) { %>
     Swal.fire({
         icon: 'info',
         title: 'Message',
         text: '<%= session.getAttribute("message") %>'
     });
-</script>
-<% session.removeAttribute("message"); %>
-<% } %>
-<script>
-</script>
-<script>
+    <% session.removeAttribute("message"); %>
+    <% } %>
+
+    // Submit the edit form for category
     function submitEditForm(button) {
         const form = button.closest('tr').querySelector('.edit-category-form');
-        form.submit();
+        if (form) {
+            form.submit();
+        }
     }
 </script>
+
 </body>
 </html>

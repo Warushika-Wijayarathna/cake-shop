@@ -53,6 +53,7 @@ public class LoadAllCategoryServlet extends HttpServlet {
 
         req.setAttribute("category", categories);
         System.out.println("LoadAllCategoryServlet forwarding to admin-portal.jsp>>>>>" + categories);
-        req.getRequestDispatcher("/admin-portal.jsp").forward(req, resp);
+        req.getSession().setAttribute("category", categories);
+        resp.sendRedirect(req.getContextPath() + "/item.jsp");
     }
 }

@@ -53,7 +53,7 @@ public class CategoryListServlet extends HttpServlet {
         req.setAttribute("categories", categories);
         req.setAttribute("showAddCategoryModal", true);
         System.out.println("CategoryListServlet forwarding to admin-portal.jsp>>>>>" + categories);
-        req.getRequestDispatcher("/admin-portal.jsp").forward(req, resp);
+        req.getRequestDispatcher("/item.jsp").forward(req, resp);
     }
 
 }

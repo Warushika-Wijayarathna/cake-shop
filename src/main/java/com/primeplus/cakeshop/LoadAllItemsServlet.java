@@ -70,6 +70,8 @@ public class LoadAllItemsServlet extends HttpServlet {
         }
 
         request.setAttribute("items", items);
-        request.getRequestDispatcher("/admin-portal.jsp#item-section").forward(request, response);
+        request.getSession().setAttribute("items", items); // Store items in session if needed
+        response.sendRedirect(request.getContextPath() + "/item.jsp");
+
     }
 }

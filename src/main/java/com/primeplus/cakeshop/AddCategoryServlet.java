@@ -54,7 +54,7 @@ public class AddCategoryServlet extends HttpServlet {
                 try (ResultSet resultSet = checkStatement.executeQuery()) {
                     if (resultSet.next() && resultSet.getInt(1) > 0) {
                         req.getSession().setAttribute("message", "Category already exists.");
-                        resp.sendRedirect(req.getContextPath() + "/admin-portal.jsp#item-section");
+                        resp.sendRedirect(req.getContextPath() + "/item.jsp");
                         return;
                     }
                 }
@@ -69,12 +69,12 @@ public class AddCategoryServlet extends HttpServlet {
         } catch (Exception e) {
             logger.severe("Failed to add category: " + e.getMessage());
             req.getSession().setAttribute("message", "Failed to add category.");
-            resp.sendRedirect(req.getContextPath() + "/admin-portal.jsp#item-section");
+            resp.sendRedirect(req.getContextPath() + "/item.jsp");
             return;
         }
 
         req.getSession().setAttribute("message", "Category added successfully.");
-        resp.sendRedirect(req.getContextPath() + "/admin-portal.jsp#item-section");
+        resp.sendRedirect(req.getContextPath() + "/item.jsp");
     }
 
 
