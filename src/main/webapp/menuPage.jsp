@@ -1,3 +1,5 @@
+<%@ page import="com.primeplus.cakeshop.entity.Item" %>
+<%@ page import="java.util.List" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -14,6 +16,8 @@
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
 </head>
 
 <body id="menu">
@@ -27,14 +31,16 @@
         <div class="nav-bar">
             <ul>
                 <li>
-                    <a href="index.jsp">home</a>
+                    <a href="user-portal.jsp">home</a>
                 </li>
                 <li>about</li>
                 <li>offers</li>
-                <li>menu</li>
+                <li onclick="loadItemsToMenuPage()">menu</li>
                 <li>contact</li>
                 <li>
-                    <i class="fa-solid fa-bag-shopping"></i>
+                    <a href="cart.jsp">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                    </a>
                 </li>
             </ul>
         </div>
@@ -94,17 +100,21 @@
         </div>
         <div class="col-md-9">
             <div class="row" id="menuItems">
-                <!-- Menu items with data-category and data-price attributes -->
-                <div id="codepen">
+                <%
+                    List<Item> items = (List<Item>) session.getAttribute("menu_items");
+                    if (items != null) {
+                        for (Item item : items) {
+                %>
+                <div id="codepen" data-category="<%= item.getCategoryId() %>" data-price="<%= item.getPrice() %>">
                     <div class="w-[200px] shadow-lg rounded-lg bg-neutral-50 p-4" id="card">
-                        <img src="https://i.imgur.com/KsntuMc.jpg" alt="Product Image" class="w-full h-[200px] object-cover rounded-md"/>
+                        <img src="data:image/jpeg;base64,<%= new String(item.getImage()) %>" alt="Product Image" class="w-full h-[200px] object-cover rounded-md"/>
                         <div class="mt-4">
-                            <h2 class="font-title text-lg font-semibold">Product Title</h2>
-                            <p class="mt-2 text-sm text-neutral-700">A brief description of the product that highlights its features and benefits.</p>
+                            <h2 class="font-title text-lg font-semibold"><%= item.getName() %></h2>
+                            <p class="mt-2 text-sm text-neutral-700"><%= item.getDescription() %></p>
                         </div>
                         <div class="mt-4 flex justify-between items-center">
-                            <span class="text-lg font-semibold">$99.99</span>
-                            <button class="bg-primary rounded-md text-white py-2 px-4" id="add-to-cart">Add to Cart</button>
+                            <span class="text-lg font-semibold">$<%= item.getPrice() %></span>
+                            <button class="bg-primary rounded-md text-white py-2 px-4" id="add-to-cart"><i class="fa-solid fa-bag-shopping"></i></button>
                         </div>
                         <div class="mt-4 flex justify-between items-center">
                             <button class="bg-primary rounded-full text-white w-[40px] h-[40px] flex justify-center items-center">
@@ -116,70 +126,10 @@
                         </div>
                     </div>
                 </div>
-                <div id="codepen">
-                    <div class="w-[200px] shadow-lg rounded-lg bg-neutral-50 p-4">
-                        <img src="https://i.imgur.com/KsntuMc.jpg" alt="Product Image" class="w-full h-[200px] object-cover rounded-md"/>
-                        <div class="mt-4">
-                            <h2 class="font-title text-lg font-semibold">Product Title</h2>
-                            <p class="mt-2 text-sm text-neutral-700">A brief description of the product that highlights its features and benefits.</p>
-                        </div>
-                        <div class="mt-4 flex justify-between items-center">
-                            <span class="text-lg font-semibold">$99.99</span>
-                            <button class="bg-primary rounded-md text-white py-2 px-4">Add to Cart</button>
-                        </div>
-                        <div class="mt-4 flex justify-between items-center">
-                            <button class="bg-primary rounded-full text-white w-[40px] h-[40px] flex justify-center items-center">
-                                <span class="material-symbols-outlined">favorite</span>
-                            </button>
-                            <button class="bg-primary rounded-full text-white w-[40px] h-[40px] flex justify-center items-center">
-                                <span class="material-symbols-outlined">share</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div id="codepen">
-                    <div class="w-[200px] shadow-lg rounded-lg bg-neutral-50 p-4">
-                        <img src="https://i.imgur.com/KsntuMc.jpg" alt="Product Image" class="w-full h-[200px] object-cover rounded-md"/>
-                        <div class="mt-4">
-                            <h2 class="font-title text-lg font-semibold">Product Title</h2>
-                            <p class="mt-2 text-sm text-neutral-700">A brief description of the product that highlights its features and benefits.</p>
-                        </div>
-                        <div class="mt-4 flex justify-between items-center">
-                            <span class="text-lg font-semibold">$99.99</span>
-                            <button class="bg-primary rounded-md text-white py-2 px-4">Add to Cart</button>
-                        </div>
-                        <div class="mt-4 flex justify-between items-center">
-                            <button class="bg-primary rounded-full text-white w-[40px] h-[40px] flex justify-center items-center">
-                                <span class="material-symbols-outlined">favorite</span>
-                            </button>
-                            <button class="bg-primary rounded-full text-white w-[40px] h-[40px] flex justify-center items-center">
-                                <span class="material-symbols-outlined">share</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div id="codepen">
-                    <div class="w-[200px] shadow-lg rounded-lg bg-neutral-50 p-4">
-                        <img src="https://i.imgur.com/KsntuMc.jpg" alt="Product Image" class="w-full h-[200px] object-cover rounded-md"/>
-                        <div class="mt-4">
-                            <h2 class="font-title text-lg font-semibold">Product Title</h2>
-                            <p class="mt-2 text-sm text-neutral-700">A brief description of the product that highlights its features and benefits.</p>
-                        </div>
-                        <div class="mt-4 flex justify-between items-center">
-                            <span class="text-lg font-semibold">$99.99</span>
-                            <button class="bg-primary rounded-md text-white py-2 px-4">Add to Cart</button>
-                        </div>
-                        <div class="mt-4 flex justify-between items-center">
-                            <button class="bg-primary rounded-full text-white w-[40px] h-[40px] flex justify-center items-center">
-                                <span class="material-symbols-outlined">favorite</span>
-                            </button>
-                            <button class="bg-primary rounded-full text-white w-[40px] h-[40px] flex justify-center items-center">
-                                <span class="material-symbols-outlined">share</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Add more menu items here -->
+                <%
+                        }
+                    }
+                %>
             </div>
         </div>
     </div>
@@ -292,6 +242,11 @@
     </div>
 
 </div>
+<form action="load-items-to-menu-page" method="post" id="loadItemsForm"style="display: none">
+    <button type="submit" id="loadItemsButton"></button>
+</form>
+
+
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -333,6 +288,10 @@
                 $(this).removeClass('active');
             }
         });
+    }
+
+    function loadItemsToMenuPage() {
+        $('#loadItemsButton').click();
     }
 
     $(document).ready(function() {

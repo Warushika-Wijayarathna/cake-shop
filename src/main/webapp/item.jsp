@@ -439,7 +439,7 @@
                 </li>
 
                 <li>
-                    <a href="#order.jsp">
+                    <a href="order.jsp">
                         <i class="metismenu-icon pe-7s-diamond"></i>
                         Orders
                         <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>

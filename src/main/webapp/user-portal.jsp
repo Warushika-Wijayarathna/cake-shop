@@ -37,7 +37,9 @@
                 </li>
                 <li>contact</li>
                 <li>
-                    <i class="fa-solid fa-bag-shopping"></i>
+                    <a href="cart.jsp">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                    </a>
                 </li>
             </ul>
         </div>
@@ -245,7 +247,7 @@
             <h5>-25% OFF</h5>
             <h2>Enjoy our specially prepared cakes for you</h2>
             <h4>Dont miss out on our daily special offers</h4>
-            <a href="#">SEE MENU</a>
+            <a href="menuPage.jsp">SEE MENU</a>
         </div>
 
     </div>
@@ -261,7 +263,7 @@
             <h2>New, amazing pastries offers every day</h2>
             <h4>
                 Just add some of our juicy side dishes</h4>
-            <a href="#">SEE MENU</a>
+            <a href="menuPage.jsp">SEE MENU</a>
         </div>
 
     </div>
