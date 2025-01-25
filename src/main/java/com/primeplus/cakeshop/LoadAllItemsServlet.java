@@ -18,6 +18,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 
@@ -36,9 +37,9 @@ public class LoadAllItemsServlet extends HttpServlet {
         }
     }
 
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("LoadAllItemsServlet doPost method is called");
         List<Item> items = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             String query = "SELECT * FROM Item";
@@ -49,7 +50,14 @@ public class LoadAllItemsServlet extends HttpServlet {
                     item.setId(resultSet.getInt("id"));
                     item.setName(resultSet.getString("name"));
                     item.setDescription(resultSet.getString("description"));
-                    item.setImage(resultSet.getString("image").getBytes());
+
+                    // Encode byte array to Base64 string
+                    byte[] imageBytes = resultSet.getBytes("image");
+                    if (imageBytes != null) {
+                        String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+                        item.setImage(base64Image.getBytes()); // Assuming the `image` property is still a byte array
+                    }
+
                     item.setPrice(resultSet.getBigDecimal("price"));
                     item.setDiscount(resultSet.getBigDecimal("discount"));
                     item.setQuantity(resultSet.getInt("quantity"));
@@ -58,12 +66,10 @@ public class LoadAllItemsServlet extends HttpServlet {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Failed to load items");
             throw new ServletException("Failed to load items", e);
         }
 
         request.setAttribute("items", items);
-        System.out.println("Items loaded successfully");
         request.getRequestDispatcher("/admin-portal.jsp#item-section").forward(request, response);
     }
 }

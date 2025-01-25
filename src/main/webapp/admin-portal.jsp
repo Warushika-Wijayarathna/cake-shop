@@ -1327,7 +1327,10 @@
                         %>
                         <tr>
                             <td><%= item.getId() %></td>
-                            <td><img src="data:image/jpeg;base64,<%= new String(item.getImage()) %>" alt="Item Image" width="50" height="50"></td>
+                            <td>
+                                <img src="data:image/jpeg;base64,<%= new String(item.getImage()) %>"
+                                     alt="Item Image" width="50" height="50">
+                            </td>
                             <td><%= item.getName() %></td>
                             <td><%= item.getDescription() %></td>
                             <td><%= item.getPrice() %></td>
@@ -1403,6 +1406,7 @@
 <!-- Bootstrap JS -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
+
     document.addEventListener("DOMContentLoaded", function () {
         const hash = window.location.hash;
         if (hash) {
@@ -1411,14 +1415,21 @@
                 target.scrollIntoView({ behavior: "smooth" });
             }
         }
-    });
-    document.addEventListener("DOMContentLoaded", function () {
+
+        console.log('Loading item section...>>>>', window.location.hash);
         if (window.location.hash === "#item-section") {
             loadItemSection();
-            loadCategories();
-            loadItems();
+
+            setTimeout(() => {
+                loadItems();
+            }, 2000);
+
+            setTimeout(() => {
+                loadCategories();
+            }, 1000);
         }
     });
+
 
 </script>
 
@@ -1441,6 +1452,7 @@
 
         // Update the URL fragment (optional)
         window.history.replaceState(null, null, "#item-section");
+
     }
 
     function loadCategories() {
