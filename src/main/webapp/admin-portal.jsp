@@ -1424,9 +1424,6 @@
                 loadItems();
             }, 2000);
 
-            setTimeout(() => {
-                loadCategories();
-            }, 1000);
         }
     });
 
@@ -1475,6 +1472,8 @@
         console.log('Loading items...');
         var loadItemsForm = document.getElementById('load-item-btn');
         loadItemsForm.click();
+
+        loadCategories();
     }
 
 </script>
