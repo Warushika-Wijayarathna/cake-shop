@@ -1420,9 +1420,8 @@
         if (window.location.hash === "#item-section") {
             loadItemSection();
 
-            setTimeout(() => {
-                loadItems();
-            }, 2000);
+            loadItems();
+
 
         }
     });
