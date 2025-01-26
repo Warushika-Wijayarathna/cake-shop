@@ -569,7 +569,7 @@
 </div>
 
 <form id="orderForm" action="save-order-servlet" method="post">
-    <input type="hidden" id="username" name="userId" value="">
+    <input type="hidden" id="username" name="username" value="">
     <input type="hidden" id="productList" name="productList" value="">
     <input type="hidden" id="total" name="total" value="">
 </form>
@@ -735,13 +735,15 @@
             var total = $(".total span").text(); // Fetch the total from the DOM
 
             // Populate the hidden form fields
-            $("#userId").val(username);
+            $("#username").val(username);
             $("#productList").val(JSON.stringify(cart));
             $("#total").val(total);
 
             // Submit the form
             $("#orderForm").submit();
-            $(".remove").click();
+            setTimeout(function() {
+                $(".remove").click();
+            }, 2000);
         });
 
     });
