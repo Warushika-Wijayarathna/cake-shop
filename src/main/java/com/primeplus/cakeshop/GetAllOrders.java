@@ -52,10 +52,17 @@ public class GetAllOrders extends HttpServlet {
                 order.setTotal(rs.getBigDecimal("total"));
                 order.setOrderDate(rs.getTimestamp("order_date"));
 
-                // Split product list into array
+                // Split product list into array and filter out image attribute
                 String[] products = order.getProductList().split(",");
-                request.setAttribute("products_" + order.getId(), products);
+                List<String> filteredProducts = new ArrayList<>();
 
+                for (String product : products) {
+                    if (!product.contains("image") && product.length() <= 100) { // Assuming 100 is the maximum length
+                        filteredProducts.add(product);
+                    }
+                }
+
+                request.setAttribute("products_" + order.getId(), filteredProducts.toArray(new String[0]));
                 orders.add(order);
             }
 
