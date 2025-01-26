@@ -607,7 +607,7 @@
                 </div>
             </div>
         </div>
-
+    </div>
     <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
 </div>
 </div>
@@ -657,6 +657,70 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
 <!-- Bootstrap JS -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    // Function to scroll to a section and update the URL without reloading the page
+
+    // Show the "Add Category" modal
+    function showAddCategoryModal() {
+        $('#addCategoryModal').modal('show');
+    }
+
+    // Submit the form to add an item, then redirect
+    function addItem(event) {
+        event.preventDefault();
+        var itemForm = document.getElementById('item-form');
+        if (itemForm) {
+            itemForm.submit();
+            goToSection('item-section');
+        }
+    }
+
+    // Load items by triggering the load item button click
+    function loadItems() {
+        return new Promise((resolve, reject) => {
+            console.log("Loading items...");
+            const loadItemsForm = document.getElementById('load-item-btn');
+            if (loadItemsForm) {
+                loadItemsForm.click();
+                resolve();
+                goToSection('item-section');
+            } else {
+                reject("load-item-btn not found");
+            }
+        });
+    }
+
+    // Load categories by triggering the load category button click
+    function loadCategories() {
+        console.log("Loading categories...");
+        const loadCategoriesForm = document.getElementById('load-cat-btn');
+        if (loadCategoriesForm) {
+            loadCategoriesForm.click();
+            goToSection('item-section');
+        } else {
+            console.error("load-cat-btn not found");
+        }
+    }
+
+    // Show message alert if session contains a message
+    <% if (session.getAttribute("message") != null) { %>
+    Swal.fire({
+        icon: 'info',
+        title: 'Message',
+        text: '<%= session.getAttribute("message") %>'
+    });
+    <% session.removeAttribute("message"); %>
+    <% } %>
+
+    // Submit the edit form for category
+    function submitEditForm(button) {
+        const form = button.closest('tr').querySelector('.edit-category-form');
+        if (form) {
+            form.submit();
+        }
+    }
+</script>
 
 </body>
 </html>
