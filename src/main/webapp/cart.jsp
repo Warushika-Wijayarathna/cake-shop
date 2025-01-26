@@ -1,3 +1,5 @@
+<%@ page import="com.primeplus.cakeshop.entity.CartItem" %>
+<%@ page import="java.util.List" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -364,9 +366,7 @@
                 <li onclick="loadItemsToMenuPage()"><a href="menuPage.jsp">menu</a></li>
                 <li>contact</li>
                 <li>
-                    <a href="cart.jsp">
                         <i class="fa-solid fa-bag-shopping"></i>
-                    </a>
                 </li>
             </ul>
         </div>
@@ -390,7 +390,51 @@
 </div>
 
 <div class="box-container mt-5">
-    <div id="cart">
+    <div section="cart">
+        <%-- Dynamically load cart items from the session or request attribute --%>
+            <%
+                // Retrieve cart items from the session
+                List<CartItem> cartItems = (List<CartItem>) session.getAttribute("cartItems");
+
+                if (cartItems != null && !cartItems.isEmpty()) {
+                    for (CartItem item : cartItems) {
+            %>
+            <article class="product">
+                <header>
+                    <a class="remove" href="removeItem?itemId=<%= item.getId() %>">
+                        <img src="<%= item.getImage() %>" alt="<%= item.getName() %>">
+                        <h3>Remove product</h3>
+                    </a>
+                </header>
+
+                <div class="content">
+                    <h1><%= item.getName() %></h1>
+                    <p><%= item.getDescription() != null ? item.getDescription() : "No description available." %></p>
+                </div>
+
+                <footer class="content">
+                    <span class="qt-minus">-</span>
+                    <span class="qt"><%= item.getQuantity() %></span>
+                    <span class="qt-plus">+</span>
+
+                    <h2 class="full-price">
+                        <%= (item.getPrice() * item.getQuantity()) %>€
+                    </h2>
+
+                    <h2 class="price">
+                        <%= item.getPrice() %>€
+                    </h2>
+                </footer>
+            </article>
+            <%
+                }
+            } else {
+            %>
+            <p>Your cart is empty!</p>
+            <%
+                }
+            %>
+
     </div>
 </div>
 <footer id="site-footer">
@@ -523,55 +567,43 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 <script>
-    const cartContainer = document.getElementById("cart");
+    AOS.init();
 
-    function displayCartItems() {
-        const savedCartItems = JSON.parse(localStorage.getItem("Cart")) || [];
-        console.log("Saved Items", savedCartItems);
-        cartContainer.innerHTML = ""; // Clear existing content.
+    // send all the cart items to the cart-item-servlet from the Cart array in local storage
+    $(document).ready(function() {
+        var cart = JSON.parse(localStorage.getItem("Cart"));
+        var cartItems = [];
+        for (var i = 0; i < cart.length; i++) {
+            var cartItem = {
+                "id": cart[i].id,
+                "name": cart[i].name,
+                "price": cart[i].price,
+                "quantity": cart[i].quantity,
+                "description": cart[i].description,
+                "image": String(cart[i].image),  // Ensure image is a string
+                "discount": cart[i].discount
+            };
+            cartItems.push(cartItem);
+        }
 
-        savedCartItems.forEach((item) => {
-            const productCard = document.createElement("article");
-            console.log("Article", productCard);
-            productCard.classList.add("product");
-            console.log("Item", item);
-            console.log("Item ID", item.id);
-            console.log("Item Name", item.name);
-
-            productCard.innerHTML = `
-            <header>
-                <a class="remove" data-id="${item.id}">
-                    <h3>Remove product</h3>
-                </a>
-            </header>
-
-            <div class="content">
-                <h1>${item.name}</h1>
-                <p>${item.description || "No description available."}</p>
-            </div>
-
-        <%--    <footer class="content">--%>
-        <%--        <span class="qt-minus" data-id="${item.id}">-</span>--%>
-        <%--        <span class="qt">${item.quantity}</span>--%>
-        <%--        <span class="qt-plus" data-id="${item.id}">+</span>--%>
-
-        <%--        <h2 class="full-price">--%>
-        <%--            ${(item.price * item.quantity).toFixed(2)}€--%>
-        <%--        </h2>--%>
-
-        <%--        <h2 class="price">--%>
-        <%--            ${item.price.toFixed(2)}€--%>
-        <%--        </h2>--%>
-        <%--    </footer>--%>
-            `;
-
-            cartContainer.appendChild(productCard);
+        // Sending the cart items in JSON format via AJAX
+        $.ajax({
+            type: "POST",
+            url: "cart-item-servlet",
+            contentType: "application/json",  // Set the Content-Type to application/json
+            data: JSON.stringify(cartItems),  // Send the data as a JSON array
+            success: function(response) {
+                // Optionally, you can handle the response here
+                console.log(response);
+            },
+            error: function(xhr, status, error) {
+                console.error("Error: ", error);  // Log error if the request fails
+            }
         });
-    }
-
-displayCartItems();
+    });
 
 </script>
+
 <script>
     AOS.init();
 
