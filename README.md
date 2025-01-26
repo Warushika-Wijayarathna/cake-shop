@@ -60,5 +60,5 @@ This project is licensed under the MIT License.
 
 To see a full demonstration of how the platform works, check out the YouTube video here:
 
-[CraveX E-Commerce Cake Shop - Demo Video](https://www.youtube.com/watch?v=your-video-link)
+[CraveX E-Commerce Cake Shop - Demo Video](https://youtu.be/j4vjyADUXn0)
 
