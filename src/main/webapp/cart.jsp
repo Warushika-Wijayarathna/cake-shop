@@ -78,7 +78,6 @@
         }
 
         .container {
-            font-family: 'Open Sans', sans-serif;
             margin: 0 auto;
             width: 980px;
         }
@@ -380,11 +379,17 @@
             background-position: 50% 50%;
             overflow: hidden;
         }
+
+        #cart-body .container1 ul, #cart-body .container1 li a {
+            color: black;
+            text-decoration: none;
+        }
+
     </style>
 
 
 </head>
-<body>
+<body id="cart-body">
 <div class="container1">
 
     <div class="nav-box">
