@@ -1,5 +1,6 @@
 package com.primeplus.cakeshop;
 
+import com.primeplus.cakeshop.entity.Order;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,6 +16,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet(name = "GetAllOrders", value = "/get-all-orders")
 public class GetAllOrders extends HttpServlet {
@@ -32,24 +35,41 @@ public class GetAllOrders extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("Get All Orders Servlet doGet method called");
-        try (Connection connection = dataSource.getConnection()) {
-            String sql = "SELECT * FROM orders";
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    while (resultSet.next()) {
-                        System.out.println("Order ID: " + resultSet.getInt("id"));
-                        System.out.println("Username: " + resultSet.getString("username"));
-                        System.out.println("Product List: " + resultSet.getString("product_list"));
-                        System.out.println("Total: " + resultSet.getString("total"));
-                        System.out.println("Order Date: " + resultSet.getTimestamp("order_date"));
-                    }
-                }
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("Get All Orders Servlet: GET");
+        List<Order> orders = new ArrayList<>();
+        String query = "SELECT id, username, product_list, total, order_date FROM orders";
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement ps = connection.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Order order = new Order();
+                order.setId(rs.getInt("id"));
+                order.setUsername(rs.getString("username"));
+                order.setProductList(rs.getString("product_list"));
+                order.setTotal(rs.getBigDecimal("total"));
+                order.setOrderDate(rs.getTimestamp("order_date"));
+
+                // Split product list into array
+                String[] products = order.getProductList().split(",");
+                request.setAttribute("products_" + order.getId(), products);
+
+                orders.add(order);
             }
+
+            System.out.println("Fetched Orders: " + orders.size());
+
         } catch (SQLException e) {
-            System.out.println("Failed to get all orders");
-            throw new ServletException("Failed to get all orders", e);
+            throw new ServletException("Database access error", e);
         }
+
+        if (orders.isEmpty()) {
+            System.out.println("No orders found.");
+        }
+
+        request.setAttribute("orders", orders);
+        request.getRequestDispatcher("orders.jsp").forward(request, response);
     }
 }

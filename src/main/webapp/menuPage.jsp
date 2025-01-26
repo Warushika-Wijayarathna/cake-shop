@@ -120,7 +120,8 @@
                         <div class="mt-4 flex justify-between items-center">
                             <span class="text-lg font-semibold">$<%= item.getPrice() %></span>
                             <button class="bg-primary rounded-md text-white py-2 px-4" id="add-to-cart"
-                                    onclick="addToCart('<%= item.getId() %>', '<%= item.getName() %>', <%= item.getPrice() %>, 'data:image/jpeg;base64,<%= new String(item.getImage()) %>', '<%= item.getDescription() %>', <%= item.getDiscount() %>)">                                <i class="fa-solid fa-bag-shopping"></i>
+                                    onclick="addToCart('<%= item.getId() %>', '<%= item.getName() %>', <%= item.getPrice() %>, 'data:image/jpeg;base64,<%= new String(item.getImage()) %>', '<%= item.getDescription() %>', <%= item.getDiscount() %>)">
+                                <i class="fa-solid fa-bag-shopping"></i>
                             </button>
                         </div>
                         <div class="mt-4 flex justify-between items-center">

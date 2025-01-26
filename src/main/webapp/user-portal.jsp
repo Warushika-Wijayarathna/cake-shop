@@ -31,15 +31,17 @@
             <ul>
                 <li>home</li>
                 <li>
-                    <a href="#contaner2">about</a>
+                    <a href="#container2">about</a>
                 </li>
                 <li>
-                    <a href="#container3">special offers</a>
+                    <a href="#container3">offers</a>
                 </li>
                 <li>
                     <a href="menuPage.jsp">menu</a>
                 </li>
-                <li>contact</li>
+                <li>
+                    <a href="#container10">offers</a>
+                </li>
                 <li>
                     <a href="cart.jsp">
                         <i class="fa-solid fa-bag-shopping"></i>

@@ -1130,92 +1130,10 @@
                 </div>
             </div>
         </div>
-        <div class="app-wrapper-footer">
-            <div class="app-footer">
-                <div class="app-footer__inner">
-                    <div class="app-footer-left">
-                        <ul class="nav">
-                            <li class="nav-item">
-                                <a href="javascript:void(0);" class="nav-link">
-                                    Footer Link 1
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="javascript:void(0);" class="nav-link">
-                                    Footer Link 2
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="app-footer-right">
-                        <ul class="nav">
-                            <li class="nav-item">
-                                <a href="javascript:void(0);" class="nav-link">
-                                    Footer Link 3
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="javascript:void(0);" class="nav-link">
-                                    <div class="badge badge-success mr-1 ml-0">
-                                        <small>NEW</small>
-                                    </div>
-                                    Footer Link 4
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>    </div>
     <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
 </div>
 </div>
 <!-- Add this section in admin.html -->
-<div id="order-section" class="app-main__inner" style="display: none;">
-    <div class="app-page-title">
-        <div class="page-title-wrapper">
-            <div class="page-title-heading">
-                <div class="page-title-icon">
-                    <i class="pe-7s-car icon-gradient bg-mean-fruit"></i>
-                </div>
-                <div>Order Page
-                    <div class="page-title-subheading">List of all placed orders.</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="main-card mb-3 card">
-                <div class="card-header">Placed Orders</div>
-                <div class="card-body">
-                    <table class="mb-0 table table-bordered">
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Order Name</th>
-                            <th>Quantity</th>
-                            <th>Description</th>
-                            <th>Status</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <!-- Example order row -->
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Order 1</td>
-                            <td>3</td>
-                            <td>This is a description of order 1</td>
-                            <td>Pending</td>
-                        </tr>
-                        <!-- Additional rows -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 <div id="item-section" class="app-main__inner" style="display: none;">
     <div class="app-page-title">
         <div class="page-title-wrapper">
