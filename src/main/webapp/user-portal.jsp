@@ -1,3 +1,5 @@
+<%@ page import="com.primeplus.cakeshop.entity.Item" %>
+<%@ page import="java.util.List" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,7 +31,7 @@
 
         <div class="nav-bar">
             <ul>
-                <li>home</li>
+                <li onclick="loadHomeItems()">home</li>
                 <li>
                     <a href="#container2">about</a>
                 </li>
@@ -40,7 +42,7 @@
                     <a href="menuPage.jsp">menu</a>
                 </li>
                 <li>
-                    <a href="#container10">offers</a>
+                    <a href="#container10">contact</a>
                 </li>
                 <li>
                     <a href="cart.jsp">
@@ -148,16 +150,23 @@
         <div class="num-box2">
             <div class="col-md-6 mb-4">
                 <!-- --------------------------------------------------- -->
-                <div id="codepen" data-aos="zoom-out">
-                    <div class="shadow-lg rounded-lg bg-neutral-50 p-4" id="card">
-                        <img src="https://i.imgur.com/KsntuMc.jpg" alt="Product Image" class="w-full h-[200px] object-cover rounded-md"/>
+                <%
+                    List<Item> items = (List<Item>) session.getAttribute("home_items");
+                    if (items != null) {
+                        for (Item item : items) {
+                %>
+                <div id="codepen" data-category="<%= item.getCategoryId() %>" data-price="<%= item.getPrice() %>">
+                    <div class="w-[200px] shadow-lg rounded-lg bg-neutral-50 p-4" id="card">
+                        <img src="data:image/jpeg;base64,<%= new String(item.getImage()) %>" alt="Product Image" class="w-full h-[200px] object-cover rounded-md"/>
                         <div class="mt-4">
-                            <h2 class="font-title text-lg font-semibold">Product Title</h2>
-                            <p class="mt-2 text-sm text-neutral-700">A brief description of the product that highlights its features and benefits.</p>
+                            <h2 class="font-title text-lg font-semibold"><%= item.getName() %></h2>
+                            <p class="mt-2 text-sm text-neutral-700"><%= item.getDescription() %></p>
                         </div>
                         <div class="mt-4 flex justify-between items-center">
-                            <span class="text-lg font-semibold">$99.99</span>
-                            <button class="bg-primary rounded-md text-white py-2 px-4" id="add-to-cart">Add to Cart</button>
+                            <span class="text-lg font-semibold">$<%= item.getPrice() %></span>
+                            <button class="bg-primary rounded-md text-white py-2 px-4" id="add-to-cart">
+                                <i class="fa-solid fa-bag-shopping"></i>
+                            </button>
                         </div>
                         <div class="mt-4 flex justify-between items-center">
                             <button class="bg-primary rounded-full text-white w-[40px] h-[40px] flex justify-center items-center">
@@ -169,28 +178,10 @@
                         </div>
                     </div>
                 </div>
-                <!-- --------------------------------------------------- -->
-                <div id="codepen" data-aos="zoom-out">
-                <div class="8shadow-lg rounded-lg bg-neutral-50 p-4" id="card">
-                    <img src="https://i.imgur.com/KsntuMc.jpg" alt="Product Image" class="w-full h-[200px] object-cover rounded-md"/>
-                    <div class="mt-4">
-                        <h2 class="font-title text-lg font-semibold">Product Title</h2>
-                        <p class="mt-2 text-sm text-neutral-700">A brief description of the product that highlights its features and benefits.</p>
-                    </div>
-                    <div class="mt-4 flex justify-between items-center">
-                        <span class="text-lg font-semibold">$99.99</span>
-                        <button class="bg-primary rounded-md text-white py-2 px-4" id="add-to-cart">Add to Cart</button>
-                    </div>
-                    <div class="mt-4 flex justify-between items-center">
-                        <button class="bg-primary rounded-full text-white w-[40px] h-[40px] flex justify-center items-center">
-                            <span class="material-symbols-outlined" id="favourite">favorite</span>
-                        </button>
-                        <button class="bg-primary rounded-full text-white w-[40px] h-[40px] flex justify-center items-center">
-                            <span class="material-symbols-outlined" id="share">share</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
+                <%
+                        }
+                    }
+                %>
             </div>
         </div>
     </div>
@@ -300,7 +291,7 @@
     </div>
 </div>
 <!-- ----------------------------------------------container10-------------------------------- -->
-<div class="container10">
+<div id="container10" class="container10">
 
     <div class="detail1">
 
@@ -396,6 +387,10 @@
 
 </div>
 
+<form action="load-home-items" method="post" id="home-items-form">
+    <button type="submit" id="home-items-submit" style="display: none;"></button>
+</form>
+
 
 
 
@@ -404,6 +399,10 @@
     AOS.init({
         offset:300,
     });
+
+    function loadHomeItems() {
+        document.getElementById("home-items-submit").click();
+    }
 </script>
 </body>
 

@@ -50,6 +50,10 @@ public class SaveOrderServlet extends HttpServlet {
             throw new ServletException("Failed to save order", e);
         }
 
-        response.sendRedirect(request.getContextPath() + "/order.jsp");
+        // Set a success message attribute
+        request.setAttribute("message", "Order saved successfully!");
+
+        // Forward the request to a JSP page to display the message
+        request.getRequestDispatcher("/menuPage.jsp").forward(request, response);
     }
 }

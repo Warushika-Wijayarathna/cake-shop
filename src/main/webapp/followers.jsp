@@ -2,6 +2,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.primeplus.cakeshop.entity.Item" %>
 <%@ page import="com.primeplus.cakeshop.entity.Order" %>
+<%@ page import="com.primeplus.cakeshop.entity.Follower" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!doctype html>
 <html lang="en">
@@ -440,7 +441,7 @@
                 </li>
 
                 <li>
-                    <a href="order.jsp" onclick="event.preventDefault(); loadAllOrders();">
+                    <a href="order.jsp">
                         <i class="metismenu-icon pe-7s-diamond"></i>
                         Orders
                         <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
@@ -454,7 +455,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="followers.jsp">
+                    <a href="followers.jsp"onclick="event.preventDefault(); loadAllFollowers();">
                         <i class="metismenu-icon pe-7s-diamond"></i>
                         Followers
                         <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
@@ -488,49 +489,28 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Username</th>
-                                    <th>Products</th>
-                                    <th>Total</th>
-                                    <th>Order Date</th>
+                                    <th>Email</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <%
                                     // Iterate over the orders list
-                                    List<Order> orders = (List<Order>) request.getAttribute("orders");
-                                    if (orders != null) {  // Check if orders is not null
-                                        for (Order order : orders) {
-                                            String[] products = (String[]) request.getAttribute("products_" + order.getId());
+                                    List<Follower> followers = (List<Follower>) request.getAttribute("followers");
+                                    if (followers != null) {  // Check if orders is not null
+                                        for (Follower follower : followers) {
+
+
                                 %>
                                 <tr>
-                                    <td><%= order.getId() %></td>
-                                    <td><%= order.getUsername() %></td>
-                                    <td>
-                                        <!-- Display each product in the product list -->
-                                        <ul>
-                                            <%
-                                                if (products != null) {  // Check if products is not null
-                                                    for (String product : products) {
-                                            %>
-                                            <li><%= product %></li>
-                                            <%
-                                                }
-                                            } else {  // If products is null, display a default message
-                                            %>
-                                            <li>No products found</li>
-                                            <%
-                                                }
-                                            %>
-                                        </ul>
-                                    </td>
-                                    <td><%= order.getTotal() %></td>
-                                    <td><%= order.getOrderDate() %></td>
-                                </tr>
+                                    <td><%=follower.getId()%></td>
+                                    <td><%=follower.getUsername()%></td>
+                                    <td><%=follower.getEmail()%></td>
                                 <%
                                     }
                                 } else {  // Handle the case when orders is null
                                 %>
                                 <tr>
-                                    <td colspan="5">No orders available.</td>
+                                    <td colspan="5">No followers available.</td>
                                 </tr>
                                 <%
                                     }
@@ -548,8 +528,8 @@
     <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
 </div>
 </div>
-<form id="get-all-orders" action="${pageContext.request.contextPath}/get-all-orders" method="post" style="display: none">
-    <button type="submit" id="get-all-order-btn" class="mt-1 btn btn-primary">Load Items</button>
+<form id="get-all-followers" action="${pageContext.request.contextPath}/load-all-followers" method="post" style="display: none">
+    <button type="submit" id="get-all-follower-btn" class="mt-1 btn btn-primary">Load Items</button>
 </form>
 
 <div id="addCategoryModal" class="modal" tabindex="-1" role="dialog" style="display: none;">
@@ -596,8 +576,8 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
-    function loadAllOrders() {
-        document.getElementById("get-all-order-btn").click();
+    function loadAllFollowers() {
+        document.getElementById("get-all-follower-btn").click();
     }
 </script>
 

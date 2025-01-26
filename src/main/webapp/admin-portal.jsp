@@ -446,14 +446,14 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="admin.jsp">
                         <i class="metismenu-icon pe-7s-diamond"></i>
-                        Clients
+                        Admins
                         <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="followers.jsp">
                         <i class="metismenu-icon pe-7s-diamond"></i>
                         Followers
                         <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>

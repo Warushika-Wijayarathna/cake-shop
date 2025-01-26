@@ -2,6 +2,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.primeplus.cakeshop.entity.Item" %>
 <%@ page import="com.primeplus.cakeshop.entity.Order" %>
+<%@ page import="com.primeplus.cakeshop.entity.Admin" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!doctype html>
 <html lang="en">
@@ -440,14 +441,14 @@
                 </li>
 
                 <li>
-                    <a href="order.jsp" onclick="event.preventDefault(); loadAllOrders();">
+                    <a href="order.jsp">
                         <i class="metismenu-icon pe-7s-diamond"></i>
                         Orders
                         <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
                     </a>
                 </li>
                 <li>
-                    <a href="admin.jsp">
+                    <a href="admin.jsp" onclick="event.preventDefault(); loadAllAdmins();">
                         <i class="metismenu-icon pe-7s-diamond"></i>
                         Admins
                         <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
@@ -489,48 +490,26 @@
                                     <th>#</th>
                                     <th>Username</th>
                                     <th>Products</th>
-                                    <th>Total</th>
-                                    <th>Order Date</th>
+                                    <th>Email</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <%
                                     // Iterate over the orders list
-                                    List<Order> orders = (List<Order>) request.getAttribute("orders");
-                                    if (orders != null) {  // Check if orders is not null
-                                        for (Order order : orders) {
-                                            String[] products = (String[]) request.getAttribute("products_" + order.getId());
+                                    List<Admin> admins = (List<Admin>) request.getAttribute("admins");
+                                    if (admins != null) {  // Check if orders is not null
+                                        for (Admin admin : admins) {
                                 %>
                                 <tr>
-                                    <td><%= order.getId() %></td>
-                                    <td><%= order.getUsername() %></td>
-                                    <td>
-                                        <!-- Display each product in the product list -->
-                                        <ul>
-                                            <%
-                                                if (products != null) {  // Check if products is not null
-                                                    for (String product : products) {
-                                            %>
-                                            <li><%= product %></li>
-                                            <%
-                                                }
-                                            } else {  // If products is null, display a default message
-                                            %>
-                                            <li>No products found</li>
-                                            <%
-                                                }
-                                            %>
-                                        </ul>
-                                    </td>
-                                    <td><%= order.getTotal() %></td>
-                                    <td><%= order.getOrderDate() %></td>
-                                </tr>
+                                    <td><%= admin.getId() %></td>
+                                    <td><%= admin.getUsername() %></td>
+                                    <td><%= admin.getEmail() %></td>
                                 <%
                                     }
                                 } else {  // Handle the case when orders is null
                                 %>
                                 <tr>
-                                    <td colspan="5">No orders available.</td>
+                                    <td colspan="5">No admins available.</td>
                                 </tr>
                                 <%
                                     }
@@ -548,8 +527,8 @@
     <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
 </div>
 </div>
-<form id="get-all-orders" action="${pageContext.request.contextPath}/get-all-orders" method="post" style="display: none">
-    <button type="submit" id="get-all-order-btn" class="mt-1 btn btn-primary">Load Items</button>
+<form id="get-all-admins" action="${pageContext.request.contextPath}/load-all-admins" method="post" style="display: none">
+    <button type="submit" id="get-all-admin-btn" class="mt-1 btn btn-primary">Load Items</button>
 </form>
 
 <div id="addCategoryModal" class="modal" tabindex="-1" role="dialog" style="display: none;">
@@ -596,8 +575,8 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
-    function loadAllOrders() {
-        document.getElementById("get-all-order-btn").click();
+    function loadAllAdmins() {
+        document.getElementById("get-all-admin-btn").click();
     }
 </script>
 

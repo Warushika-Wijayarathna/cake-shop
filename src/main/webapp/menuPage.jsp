@@ -336,8 +336,12 @@
     $(document).ready(function() {
         applyFilter();
     });
-</script>
 
+
+</script>
+<% if (request.getAttribute("message") != null) { %>
+toastr.success("<%= request.getAttribute("message") %>");
+<% } %>
 
 </body>
 </html>
