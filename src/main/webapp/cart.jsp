@@ -131,8 +131,8 @@
         }
 
         .product img {
-            width: 100%;
-            height: 100%;
+            width: fit-content;
+            object-fit: cover;
         }
 
         .product header, .product .content {
@@ -143,13 +143,16 @@
         }
 
         .product header {
-            background: #000;
+            background: rgba(0, 0, 0, 0);
             margin: 0 1% 20px 0;
             overflow: hidden;
             padding: 0;
             position: relative;
             width: 24%;
             height: 195px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .product header:hover img {
@@ -344,6 +347,11 @@
         .added {
             margin: 0 -50px 0 0 !important;
         }
+
+        .box-container{
+            padding-left: 100px;
+            padding-right: 100px;
+        }
     </style>
 
 </head>
@@ -401,7 +409,7 @@
             %>
             <article class="product">
                 <header>
-                    <a class="remove" href="removeItem?itemId=<%= item.getId() %>">
+                    <a class="remove" href="javascript:void(0);" onclick="removeSelected('<%= item.getId() %>')">
                         <img src="<%= item.getImage() %>" alt="<%= item.getName() %>">
                         <h3>Remove product</h3>
                     </a>
@@ -418,11 +426,11 @@
                     <span class="qt-plus">+</span>
 
                     <h2 class="full-price">
-                        <%= (item.getPrice() * item.getQuantity()) %>€
+                        <%= (item.getPrice() - (item.getPrice() * item.getDiscount() / 100)*item.getQuantity()) %>
                     </h2>
 
                     <h2 class="price">
-                        <%= item.getPrice() %>€
+                        <%= item.getPrice() - (item.getPrice() * item.getDiscount() / 100) %>
                     </h2>
                 </footer>
             </article>
@@ -441,13 +449,12 @@
     <div class="container clearfix">
 
         <div class="left">
-            <h2 class="subtotal">Subtotal: <span>163.96</span>€</h2>
-            <h3 class="tax">Taxes (5%): <span>8.2</span>€</h3>
-            <h3 class="shipping">Shipping: <span>5.00</span>€</h3>
+            <h2 class="subtotal">Subtotal: <span>0.0</span></h2>
+            <h3 class="shipping">Shipping(5%): <span></span></h3>
         </div>
 
         <div class="right">
-            <h1 class="total">Total: <span>177.16</span>€</h1>
+            <h1 class="total">Total: <span>0.0</span></h1>
             <a class="btn">Checkout</a>
         </div>
 
@@ -561,6 +568,12 @@
 
 </div>
 
+<form id="orderForm" action="save-order-servlet" method="post">
+    <input type="hidden" id="username" name="userId" value="">
+    <input type="hidden" id="productList" name="productList" value="">
+    <input type="hidden" id="total" name="total" value="">
+</form>
+
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -600,7 +613,20 @@
                 console.error("Error: ", error);  // Log error if the request fails
             }
         });
+
     });
+    function removeSelected(id) {
+        // Retrieve the cart items from the local storage
+        var cart = JSON.parse(localStorage.getItem("Cart"));
+        // Find the index of the item to remove
+        var index = cart.findIndex(item => item.id === id);
+        // Remove the item from the cart array
+        cart.splice(index, 1);
+        // Update the local storage with the new cart array
+        localStorage.setItem("Cart", JSON.stringify(cart));
+        // Reload the page to reflect the changes
+        location.reload();
+    }
 
 </script>
 
@@ -609,88 +635,115 @@
 
     var check = false;
 
+    // Function to update the full price of each item based on quantity
     function changeVal(el) {
-        var qt = parseFloat(el.parent().children(".qt").html());
-        var price = parseFloat(el.parent().children(".price").html());
+        var qt = parseFloat(el.closest('.product').find(".qt").html());
+        var price = parseFloat(el.closest('.product').find(".price").html());
         var eq = Math.round(price * qt * 100) / 100;
+        el.closest('.product').find(".full-price").html(eq);
 
-        el.parent().children(".full-price").html( eq + "€" );
-
-        changeTotal();
+        changeTotal(); // Recalculate total after changing quantity
     }
 
+    // Function to update the subtotal, tax, and total
     function changeTotal() {
+        var subtotal = 0;
 
-        var price = 0;
-
-        $(".full-price").each(function(index){
-            price += parseFloat($(".full-price").eq(index).html());
+        // Calculate subtotal from all item prices
+        $(".full-price").each(function() {
+            subtotal += parseFloat($(this).html());
         });
 
-        price = Math.round(price * 100) / 100;
-        var tax = Math.round(price * 0.05 * 100) / 100
-        var shipping = parseFloat($(".shipping span").html());
-        var fullPrice = Math.round((price + tax + shipping) *100) / 100;
+        subtotal = Math.round(subtotal * 100) / 100;
+        var tax = Math.round(subtotal * 0.05 * 100) / 100;  // Tax is 5% of the subtotal
+        var shipping = 5.0;  // Default shipping cost
+        var fullPrice = Math.round((subtotal + tax + shipping) * 100) / 100;
 
-        if(price == 0) {
+        // If subtotal is 0, set fullPrice to 0 as well
+        if (subtotal === 0) {
             fullPrice = 0;
         }
 
-        $(".subtotal span").html(price);
-        $(".tax span").html(tax);
-        $(".total span").html(fullPrice);
+        // Update the UI with the new totals
+        $(".subtotal span").html(subtotal.toFixed(2));
+        $(".tax span").html(tax.toFixed(2));
+        $(".total span").html(fullPrice.toFixed(2));
     }
 
-    $(document).ready(function(){
+    // Event listener for removing items from the cart
+    $(document).ready(function() {
+        // Call changeVal for all products on page load
+        $(".product").each(function () {
+            const el = $(this).find(".qt-plus"); // Target an element within each product to pass to changeVal
+            changeVal(el); // Recalculate values for each product
+        });
 
-        $(".remove").click(function(){
+        $(".remove").click(function() {
             var el = $(this);
-            el.parent().parent().addClass("removed");
-            window.setTimeout(
-                function(){
-                    el.parent().parent().slideUp('fast', function() {
-                        el.parent().parent().remove();
-                        if($(".product").length == 0) {
-                            if(check) {
-                                $("#cart").html("<h1>The shop does not function, yet!</h1><p>If you liked my shopping cart, please take a second and heart this Pen on <a href='https://codepen.io/ziga-miklic/pen/xhpob'>CodePen</a>. Thank you!</p>");
-                            } else {
-                                $("#cart").html("<h1>No products!</h1>");
-                            }
+            el.closest(".product").addClass("removed");
+            setTimeout(function() {
+                el.closest(".product").slideUp('fast', function() {
+                    $(this).remove();
+                    if ($(".product").length === 0) {
+                        if (check) {
+                            $("#cart").html("<h1>The shop does not function, yet!</h1><p>If you liked my shopping cart, please take a second and heart this Pen on <a href='https://codepen.io/ziga-miklic/pen/xhpob'>CodePen</a>. Thank you!</p>");
+                        } else {
+                            $("#cart").html("<h1>No products!</h1>");
                         }
-                        changeTotal();
-                    });
-                }, 200);
+                    }
+                    changeTotal(); // Recalculate total after item removal
+                });
+            }, 200);
         });
 
-        $(".qt-plus").click(function(){
-            $(this).parent().children(".qt").html(parseInt($(this).parent().children(".qt").html()) + 1);
-
-            $(this).parent().children(".full-price").addClass("added");
+        // Increase the quantity of the product
+        $(".qt-plus").click(function() {
+            var qtyElement = $(this).parent().find(".qt");
+            qtyElement.html(parseInt(qtyElement.html()) + 1);
+            $(this).parent().find(".full-price").addClass("added");
 
             var el = $(this);
-            window.setTimeout(function(){el.parent().children(".full-price").removeClass("added"); changeVal(el);}, 150);
+            setTimeout(function() {
+                el.parent().find(".full-price").removeClass("added");
+                changeVal(el); // Recalculate price after increasing quantity
+            }, 150);
         });
 
-        $(".qt-minus").click(function(){
-
-            child = $(this).parent().children(".qt");
-
-            if(parseInt(child.html()) > 1) {
-                child.html(parseInt(child.html()) - 1);
+        // Decrease the quantity of the product
+        $(".qt-minus").click(function() {
+            var qtyElement = $(this).parent().find(".qt");
+            if (parseInt(qtyElement.html()) > 1) {
+                qtyElement.html(parseInt(qtyElement.html()) - 1);
             }
-
-            $(this).parent().children(".full-price").addClass("minused");
+            $(this).parent().find(".full-price").addClass("minused");
 
             var el = $(this);
-            window.setTimeout(function(){el.parent().children(".full-price").removeClass("minused"); changeVal(el);}, 150);
+            setTimeout(function() {
+                el.parent().find(".full-price").removeClass("minused");
+                changeVal(el); // Recalculate price after decreasing quantity
+            }, 150);
         });
 
-        window.setTimeout(function(){$(".is-open").removeClass("is-open")}, 1200);
+        // Close the cart after a short timeout
+        setTimeout(function() {
+            $(".is-open").removeClass("is-open");
+        }, 1200);
 
-        $(".btn").click(function(){
-            check = true;
+        $(".btn").click(function () {
+            var username = "ashani"; // Fetch userId from session
+            var cart = JSON.parse(localStorage.getItem("Cart")); // Get cart details from localStorage
+            var total = $(".total span").text(); // Fetch the total from the DOM
+
+            // Populate the hidden form fields
+            $("#userId").val(username);
+            $("#productList").val(JSON.stringify(cart));
+            $("#total").val(total);
+
+            // Submit the form
+            $("#orderForm").submit();
             $(".remove").click();
         });
+
     });
 </script>
 
