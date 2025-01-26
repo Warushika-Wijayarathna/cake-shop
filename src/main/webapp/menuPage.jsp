@@ -17,6 +17,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 
 </head>
 
@@ -114,7 +119,9 @@
                         </div>
                         <div class="mt-4 flex justify-between items-center">
                             <span class="text-lg font-semibold">$<%= item.getPrice() %></span>
-                            <button class="bg-primary rounded-md text-white py-2 px-4" id="add-to-cart"><i class="fa-solid fa-bag-shopping"></i></button>
+                            <button class="bg-primary rounded-md text-white py-2 px-4" id="add-to-cart"
+                                    onclick="addToCart('<%= item.getId() %>', '<%= item.getName() %>', <%= item.getPrice() %>, 'data:image/jpeg;base64,<%= new String(item.getImage()) %>', '<%= item.getDescription() %>', <%= item.getDiscount() %>)">                                <i class="fa-solid fa-bag-shopping"></i>
+                            </button>
                         </div>
                         <div class="mt-4 flex justify-between items-center">
                             <button class="bg-primary rounded-full text-white w-[40px] h-[40px] flex justify-center items-center">
@@ -251,6 +258,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 <script>
     AOS.init();
 
@@ -294,9 +302,53 @@
         $('#loadItemsButton').click();
     }
 
+    // Function to handle adding items to the cart
+    function addToCart(itemId, itemName, itemPrice, itemImage, itemDescription, itemDiscount) {
+        // Retrieve the existing cart from localStorage or initialize an empty array
+        let cart = JSON.parse(localStorage.getItem('Cart')) || [];
+
+        // Check if the item already exists in the cart
+        const existingItem = cart.find(item => item.id === itemId);
+
+        if (existingItem) {
+            // If the item is already in the cart, increase the quantity
+            existingItem.quantity += 1;
+
+            // Show a styled success notification
+            toastr.success(`Increased quantity of ${itemName} in your cart!`);
+        } else {
+            // Otherwise, add a new item to the cart
+            cart.push({
+                id: itemId,
+                name: itemName,
+                price: itemPrice,
+                image: itemImage,
+                quantity: 1, // Default quantity is 1
+                description: itemDescription,
+                discount: itemDiscount
+            });
+
+            // Show a styled success notification
+            toastr.success(`${itemName} has been added to your cart!`);
+        }
+
+        // Save the updated cart back to localStorage
+        localStorage.setItem('Cart', JSON.stringify(cart));
+    }
+
+    // Optional: Configure Toastr options
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right", // Change position if needed
+        "timeOut": "3000" // Duration in milliseconds
+    };
+
     $(document).ready(function() {
         applyFilter();
     });
 </script>
+
+
 </body>
 </html>

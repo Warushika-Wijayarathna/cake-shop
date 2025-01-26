@@ -42,7 +42,7 @@ public class AddCategoryServlet extends HttpServlet {
         // Validate input
         if (category == null || category.isEmpty()) {
             req.getSession().setAttribute("message", "Category is required.");
-            resp.sendRedirect(req.getContextPath() + "/admin-portal.jsp#item-section");
+            resp.sendRedirect(req.getContextPath() + "/item.jsp");
             return;
         }
 
