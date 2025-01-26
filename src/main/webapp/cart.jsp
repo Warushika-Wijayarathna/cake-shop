@@ -465,33 +465,32 @@
     <div class="detail1">
 
         <div class="detail-heading-box">
-            <h1>Cravex</h1>
+            <h1>CraveX</h1>
         </div>
 
         <div class="detail-para">
-
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do</p>
-
+            <p>Welcome to CraveX, where every bite is crafted with love and creativity. Indulge in our irresistible cakes and treats!</p>
         </div>
 
         <div class="social-media">
 
-            <div class="media1"> <a href="#">
-                <img src="https://i.postimg.cc/3R9bC0SB/instagram-1.png" alt="">
-            </a></div>
-
-            <div class="media2"> <a href="#">
-                <img src="https://i.postimg.cc/4yfRXTM8/facebook.png" alt="">
-            </a></div>
-
-            <div class="media3">
-                <a href="#">
-                    <img src="https://i.postimg.cc/SKBt7kxR/twitter-1.png" alt="">
+            <div class="media1">
+                <a href="https://instagram.com/cravexcakes" target="_blank">
+                    <img src="https://i.postimg.cc/3R9bC0SB/instagram-1.png" alt="Instagram">
                 </a>
             </div>
 
+            <div class="media2">
+                <a href="https://facebook.com/cravexcakes" target="_blank">
+                    <img src="https://i.postimg.cc/4yfRXTM8/facebook.png" alt="Facebook">
+                </a>
+            </div>
 
-
+            <div class="media3">
+                <a href="https://twitter.com/cravexcakes" target="_blank">
+                    <img src="https://i.postimg.cc/SKBt7kxR/twitter-1.png" alt="Twitter">
+                </a>
+            </div>
 
         </div>
 
@@ -501,58 +500,47 @@
     <div class="detail2">
 
         <div class="detail-heading-box">
-
-            <h1>Contact us</h1>
-
-        </div>
-
-
-        <div class="address-box">
-
-            <div class="address-logo">
-                <img src="https://i.postimg.cc/QC9Q6WYr/pin.png" alt="">
-            </div>
-
-            <div class="address-name">
-                <h5>Street name 1, City</h5>
-            </div>
-
-        </div>
-
-
-        <div class="address-box">
-            <div class="address-logo">
-                <img src="https://i.postimg.cc/SRFjdjnn/phone-call.png" alt="">
-            </div>
-            <div class="address-name">
-                <h5>+569 2698 0256</h5>
-            </div>
-        </div>
-
-
-        <div class="address-box">
-
-            <div class="address-logo">
-                <img src="https://i.postimg.cc/wjdZzzmD/email-1.png" alt="">
-            </div>
-            <div class="address-name">
-                <h5>email@companyname.com</h5>
-            </div>
-
+            <h1>Contact Us</h1>
         </div>
 
         <div class="address-box">
-
             <div class="address-logo">
-                <img src="https://i.postimg.cc/wjdZzzmD/email-1.png" alt="">
+                <img src="https://i.postimg.cc/QC9Q6WYr/pin.png" alt="Location">
             </div>
             <div class="address-name">
-                <h5>email2@companyname.com</h5>
+                <h5>123 Sweet Avenue, Cake City</h5>
             </div>
+        </div>
 
+        <div class="address-box">
+            <div class="address-logo">
+                <img src="https://i.postimg.cc/SRFjdjnn/phone-call.png" alt="Phone">
+            </div>
+            <div class="address-name">
+                <h5>+1 234 567 890</h5>
+            </div>
+        </div>
+
+        <div class="address-box">
+            <div class="address-logo">
+                <img src="https://i.postimg.cc/wjdZzzmD/email-1.png" alt="Email">
+            </div>
+            <div class="address-name">
+                <h5>info@cravexcakes.com</h5>
+            </div>
+        </div>
+
+        <div class="address-box">
+            <div class="address-logo">
+                <img src="https://i.postimg.cc/wjdZzzmD/email-1.png" alt="Email">
+            </div>
+            <div class="address-name">
+                <h5>support@cravexcakes.com</h5>
+            </div>
         </div>
 
     </div>
+
     <!-- ---------------------------------------- -->
     <div class="detail3">
 
@@ -562,13 +550,13 @@
 
         <a href="#">Subscribe</a>
 
-        <h6>Get the latest special offers</h6>
+        <h6>Get the latest special offers, delicious recipes, and news directly to your inbox!</h6>
 
     </div>
 
 </div>
 
-<form id="orderForm" action="save-order-servlet" method="post">
+<form id="orderForm" action="save-order-servlet" method="post" style="display: none">
     <input type="hidden" id="username" name="username" value="">
     <input type="hidden" id="productList" name="productList" value="">
     <input type="hidden" id="total" name="total" value="">

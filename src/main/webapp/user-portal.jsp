@@ -30,8 +30,12 @@
         <div class="nav-bar">
             <ul>
                 <li>home</li>
-                <li>about</li>
-                <li>offers</li>
+                <li>
+                    <a href="#contaner2">about</a>
+                </li>
+                <li>
+                    <a href="#container3">special offers</a>
+                </li>
                 <li>
                     <a href="menuPage.jsp">menu</a>
                 </li>
@@ -64,7 +68,7 @@
 
 <!-- ---------------------------------------------------------------------------- -->
 
-<div class="container2">
+<div id="container2" class="container2">
     <div class="box1" data-aos="zoom-in">
 
     </div>
@@ -72,14 +76,15 @@
         <div class="about-box">
             <h5>about us</h5>
             <h2>Delivering best ingredients for our trusty cake lovers</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
-                et dolore magna aliqua. Quis ipsum suspendisse ultrices gravida.</p>
-            <h4>Risus commodo viverra maecenas accumsan lacus lalala vel facilisis.</h4>
+            <p>Welcome to CraveX, where every slice tells a story of love, passion, and indulgence. Founded with a vision to craft extraordinary cakes that ignite joy, we are more than just a cake shop – we are creators of memories. From irresistible flavors to intricate designs, each cake is a masterpiece made with the finest ingredients and a sprinkle of creativity.
+
+                Whether it's a grand celebration or a simple treat to brighten your day, CraveX promises to deliver the perfect combination of taste and artistry. Join us in making every occasion sweeter – because at CraveX, life is meant to be savored.</p>
+            <h4>"CraveX – Where Every Bite is a Celebration of Joy!"</h4>
         </div>
     </div>
 </div>
 <!-- ------------------------------------------------------------------------------------------------------ -->
-<div class="container3">
+<div id="container3" class="container3">
     <h1>Special offers</h1>
 
     <div class="offer-box">
@@ -249,7 +254,7 @@
             </div>
 
             <div class="para">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor</p>
+                <p>"Rich, chocolatey Fudy Muffins with a luscious glaze – the perfect treat to satisfy your sweet cravings!"</p>
             </div>
 
             <div class="submit">
@@ -293,39 +298,37 @@
     </div>
 </div>
 <!-- ----------------------------------------------container10-------------------------------- -->
-
 <div class="container10">
 
     <div class="detail1">
 
         <div class="detail-heading-box">
-            <h1>Cravex</h1>
+            <h1>CraveX</h1>
         </div>
 
         <div class="detail-para">
-
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do</p>
-
+            <p>Welcome to CraveX, where every bite is crafted with love and creativity. Indulge in our irresistible cakes and treats!</p>
         </div>
 
         <div class="social-media">
 
-            <div class="media1"> <a href="#">
-                <img src="https://i.postimg.cc/3R9bC0SB/instagram-1.png" alt="">
-            </a></div>
-
-            <div class="media2"> <a href="#">
-                <img src="https://i.postimg.cc/4yfRXTM8/facebook.png" alt="">
-            </a></div>
-
-            <div class="media3">
-                <a href="#">
-                    <img src="https://i.postimg.cc/SKBt7kxR/twitter-1.png" alt="">
+            <div class="media1">
+                <a href="https://instagram.com/cravexcakes" target="_blank">
+                    <img src="https://i.postimg.cc/3R9bC0SB/instagram-1.png" alt="Instagram">
                 </a>
             </div>
 
+            <div class="media2">
+                <a href="https://facebook.com/cravexcakes" target="_blank">
+                    <img src="https://i.postimg.cc/4yfRXTM8/facebook.png" alt="Facebook">
+                </a>
+            </div>
 
-
+            <div class="media3">
+                <a href="https://twitter.com/cravexcakes" target="_blank">
+                    <img src="https://i.postimg.cc/SKBt7kxR/twitter-1.png" alt="Twitter">
+                </a>
+            </div>
 
         </div>
 
@@ -335,58 +338,47 @@
     <div class="detail2">
 
         <div class="detail-heading-box">
-
-            <h1>Contact us</h1>
-
-        </div>
-
-
-        <div class="address-box">
-
-            <div class="address-logo">
-                <img src="https://i.postimg.cc/QC9Q6WYr/pin.png" alt="">
-            </div>
-
-            <div class="address-name">
-                <h5>Street name 1, City</h5>
-            </div>
-
-        </div>
-
-
-        <div class="address-box">
-            <div class="address-logo">
-                <img src="https://i.postimg.cc/SRFjdjnn/phone-call.png" alt="">
-            </div>
-            <div class="address-name">
-                <h5>+569 2698 0256</h5>
-            </div>
-        </div>
-
-
-        <div class="address-box">
-
-            <div class="address-logo">
-                <img src="https://i.postimg.cc/wjdZzzmD/email-1.png" alt="">
-            </div>
-            <div class="address-name">
-                <h5>email@companyname.com</h5>
-            </div>
-
+            <h1>Contact Us</h1>
         </div>
 
         <div class="address-box">
-
             <div class="address-logo">
-                <img src="https://i.postimg.cc/wjdZzzmD/email-1.png" alt="">
+                <img src="https://i.postimg.cc/QC9Q6WYr/pin.png" alt="Location">
             </div>
             <div class="address-name">
-                <h5>email2@companyname.com</h5>
+                <h5>123 Sweet Avenue, Cake City</h5>
             </div>
+        </div>
 
+        <div class="address-box">
+            <div class="address-logo">
+                <img src="https://i.postimg.cc/SRFjdjnn/phone-call.png" alt="Phone">
+            </div>
+            <div class="address-name">
+                <h5>+1 234 567 890</h5>
+            </div>
+        </div>
+
+        <div class="address-box">
+            <div class="address-logo">
+                <img src="https://i.postimg.cc/wjdZzzmD/email-1.png" alt="Email">
+            </div>
+            <div class="address-name">
+                <h5>info@cravexcakes.com</h5>
+            </div>
+        </div>
+
+        <div class="address-box">
+            <div class="address-logo">
+                <img src="https://i.postimg.cc/wjdZzzmD/email-1.png" alt="Email">
+            </div>
+            <div class="address-name">
+                <h5>support@cravexcakes.com</h5>
+            </div>
         </div>
 
     </div>
+
     <!-- ---------------------------------------- -->
     <div class="detail3">
 
@@ -396,11 +388,12 @@
 
         <a href="#">Subscribe</a>
 
-        <h6>Get the latest special offers</h6>
+        <h6>Get the latest special offers, delicious recipes, and news directly to your inbox!</h6>
 
     </div>
 
 </div>
+
 
 
 
