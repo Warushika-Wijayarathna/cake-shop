@@ -440,7 +440,7 @@
                 </li>
 
                 <li>
-                    <a href="order.jsp">
+                    <a href="order.jsp" onclick="event.preventDefault(); loadAllOrders();">
                         <i class="metismenu-icon pe-7s-diamond"></i>
                         Orders
                         <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
@@ -497,8 +497,9 @@
                                 <%
                                     // Iterate over the orders list
                                     List<Order> orders = (List<Order>) request.getAttribute("orders");
-                                    for (Order order : orders) {
-                                        String[] products = (String[]) request.getAttribute("products_" + order.getId());
+                                    if (orders != null) {  // Check if orders is not null
+                                        for (Order order : orders) {
+                                            String[] products = (String[]) request.getAttribute("products_" + order.getId());
                                 %>
                                 <tr>
                                     <td><%= order.getId() %></td>
@@ -507,12 +508,16 @@
                                         <!-- Display each product in the product list -->
                                         <ul>
                                             <%
-                                                if (products != null) {
+                                                if (products != null) {  // Check if products is not null
                                                     for (String product : products) {
                                             %>
                                             <li><%= product %></li>
                                             <%
-                                                    }
+                                                }
+                                            } else {  // If products is null, display a default message
+                                            %>
+                                            <li>No products found</li>
+                                            <%
                                                 }
                                             %>
                                         </ul>
@@ -522,8 +527,16 @@
                                 </tr>
                                 <%
                                     }
+                                } else {  // Handle the case when orders is null
+                                %>
+                                <tr>
+                                    <td colspan="5">No orders available.</td>
+                                </tr>
+                                <%
+                                    }
                                 %>
                                 </tbody>
+
                             </table>
                         </div>
                     </div>
@@ -535,8 +548,8 @@
     <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
 </div>
 </div>
-<form id="load-items-form" action="${pageContext.request.contextPath}/load-all-items-servlet" method="post" style="display: none">
-    <button type="submit" id="load-item-btn" class="mt-1 btn btn-primary">Load Items</button>
+<form id="get-all-orders" action="${pageContext.request.contextPath}/get-all-orders" method="post" style="display: none">
+    <button type="submit" id="get-all-order-btn" class="mt-1 btn btn-primary">Load Items</button>
 </form>
 
 <div id="addCategoryModal" class="modal" tabindex="-1" role="dialog" style="display: none;">
@@ -583,66 +596,8 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
-    // Function to scroll to a section and update the URL without reloading the page
-
-    // Show the "Add Category" modal
-    function showAddCategoryModal() {
-        $('#addCategoryModal').modal('show');
-    }
-
-    // Submit the form to add an item, then redirect
-    function addItem(event) {
-        event.preventDefault();
-        var itemForm = document.getElementById('item-form');
-        if (itemForm) {
-            itemForm.submit();
-            goToSection('item-section');
-        }
-    }
-
-    // Load items by triggering the load item button click
-    function loadItems() {
-        return new Promise((resolve, reject) => {
-            console.log("Loading items...");
-            const loadItemsForm = document.getElementById('load-item-btn');
-            if (loadItemsForm) {
-                loadItemsForm.click();
-                resolve();
-                goToSection('item-section');
-            } else {
-                reject("load-item-btn not found");
-            }
-        });
-    }
-
-    // Load categories by triggering the load category button click
-    function loadCategories() {
-        console.log("Loading categories...");
-        const loadCategoriesForm = document.getElementById('load-cat-btn');
-        if (loadCategoriesForm) {
-            loadCategoriesForm.click();
-            goToSection('item-section');
-        } else {
-            console.error("load-cat-btn not found");
-        }
-    }
-
-    // Show message alert if session contains a message
-    <% if (session.getAttribute("message") != null) { %>
-    Swal.fire({
-        icon: 'info',
-        title: 'Message',
-        text: '<%= session.getAttribute("message") %>'
-    });
-    <% session.removeAttribute("message"); %>
-    <% } %>
-
-    // Submit the edit form for category
-    function submitEditForm(button) {
-        const form = button.closest('tr').querySelector('.edit-category-form');
-        if (form) {
-            form.submit();
-        }
+    function loadAllOrders() {
+        document.getElementById("get-all-order-btn").click();
     }
 </script>
 

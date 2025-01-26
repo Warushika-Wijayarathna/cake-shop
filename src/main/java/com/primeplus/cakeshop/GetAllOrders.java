@@ -70,6 +70,6 @@ public class GetAllOrders extends HttpServlet {
         }
 
         request.setAttribute("orders", orders);
-        request.getRequestDispatcher("orders.jsp").forward(request, response);
+        request.getRequestDispatcher("order.jsp").forward(request, response);
     }
 }
