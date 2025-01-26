@@ -31,7 +31,7 @@ To run the project locally:
 
 1. **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/cravex.git
+    https://github.com/Warushika-Wijayarathna/cake-shop.git
     ```
 2. **Set up the MySQL database**:
     - Create a database named `CraveX`.
